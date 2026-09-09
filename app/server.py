@@ -19,7 +19,7 @@ FILES = {
     "fen": ["Equipos FEN por OC.geojson", "Equipos_FEN_por_OC.geojson"],
 }
 
-app = FastAPI(title="NEXO AI v3.9 Render")
+app = FastAPI(title="NEXO AI v4.0 Render")
 
 def find_file(kind: str):
     for name in FILES[kind]:
@@ -58,7 +58,7 @@ def parquet_count(path: Path):
 
 @app.get("/health")
 def health():
-    return {"ok": True, "service": "NEXO AI v3.9"}
+    return {"ok": True, "service": "NEXO AI v4.0"}
 
 @app.get("/api/status")
 def status():
