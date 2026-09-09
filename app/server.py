@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-import json, os, shutil, urllib.request, urllib.error
+import json, os, shutil, urllib.request, urllib.error, urllib.parse
 import duckdb
 from fastapi import FastAPI, Query, UploadFile, File, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -19,7 +19,7 @@ FILES = {
     "fen": ["Equipos FEN por OC.geojson", "Equipos_FEN_por_OC.geojson"],
 }
 
-app = FastAPI(title="NEXO AI v3.8 Render")
+app = FastAPI(title="NEXO AI v3.9 Render")
 
 def find_file(kind: str):
     for name in FILES[kind]:
@@ -58,7 +58,7 @@ def parquet_count(path: Path):
 
 @app.get("/health")
 def health():
-    return {"ok": True, "service": "NEXO AI v3.8"}
+    return {"ok": True, "service": "NEXO AI v3.9"}
 
 @app.get("/api/status")
 def status():
@@ -181,6 +181,47 @@ async def ai_chat(request:Request):
     except urllib.error.HTTPError as e:
         return JSONResponse({"error":"OpenAI API error","detail":e.read().decode("utf-8","ignore")[:1000]},status_code=502)
     except Exception as e:return JSONResponse({"error":str(e)},status_code=502)
+
+
+
+@app.get("/api/geocode")
+def geocode(q: str = Query(..., min_length=3)):
+    """
+    Convierte una dirección chilena a coordenadas.
+    Ej.: Avenida Apoquindo 3000, Las Condes, Santiago
+    """
+    query = q.strip()
+    params = urllib.parse.urlencode({
+        "q": query,
+        "format": "jsonv2",
+        "limit": 5,
+        "countrycodes": "cl",
+        "addressdetails": 1
+    })
+    url = f"https://nominatim.openstreetmap.org/search?{params}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "NEXO-AI-FO/3.9 (fiber feasibility geocoder)",
+            "Accept-Language": "es-CL,es;q=0.9"
+        }
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            rows = json.loads(resp.read().decode("utf-8"))
+        results = []
+        for r in rows:
+            results.append({
+                "lat": float(r["lat"]),
+                "lon": float(r["lon"]),
+                "display_name": r.get("display_name", query),
+                "type": r.get("type"),
+                "category": r.get("category"),
+                "address": r.get("address", {})
+            })
+        return {"query": query, "results": results}
+    except Exception as e:
+        return JSONResponse({"error": f"No fue posible geocodificar la dirección: {e}"}, status_code=502)
 
 
 app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
