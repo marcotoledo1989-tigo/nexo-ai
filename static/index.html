@@ -285,6 +285,12 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
 .legend-backup-mufa{width:17px;height:17px;border-radius:50%;background:#ffd54f;border:4px solid #6a3cff;outline:2px solid white}
 </style>
 
+
+<style id="nexo-v38-ai">
+.top-ai-badge{font-size:9px;padding:5px 7px;border:1px solid #2f7599;border-radius:999px;color:#8dc8e5;background:#061a2a}
+.ai-connect-card{border-color:rgba(128,88,255,.55)!important}
+.ai-connect-card .ok-ai{color:#65f2c3!important}
+</style>
 </head>
 <body>
 <div class="nexo-shell">
@@ -303,7 +309,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
     <div class="top-user">
       <div class="user-icon">◉</div>
       <div><b>NEXO AI</b><small>Ingeniería FO</small></div>
-      <span class="top-status">● ONLINE</span>
+      <span class="top-status">● ONLINE</span><span class="top-ai-badge" id="topAI">IA LOCAL</span>
     </div>
   </header>
 
@@ -330,7 +336,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
       <small>Disponible</small>
       <span id="engineDot" class="dot hidden"></span>
     </div>
-    <div class="sidebar-version">NEXO AI v3.7<br><span>Render · 2026</span></div>
+    <div class="sidebar-version">NEXO AI v3.8<br><span>Render · 2026</span></div>
   </aside>
 
   <main class="nexo-main">
@@ -414,6 +420,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
         <div class="quick-pro">
           <button id="q1">Calcular factibilidad</button>
           <button id="q2">Estado de bases</button>
+          <button id="qInventory">Inventario FEN/MEN</button>
           <button id="qMap">Mostrar ruta y postes</button>
         </div>
       </section>
@@ -443,6 +450,12 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
           <button id="postesUploadBtn" type="button" class="secondary">Cargar GeoParquet temporal</button>
           <button id="postesDeleteBtn" type="button" class="secondary">Descargar postes de la sesión</button>
           <small id="postesModeInfo">El archivo se elimina al reiniciar/dormir el servicio.</small>
+        </div>
+        <div class="file ai-connect-card">
+          <b>IA avanzada · OpenAI</b>
+          <small id="aiStatusInfo">Consultando estado…</small>
+          <button id="aiConnectBtn" type="button" class="secondary">Configurar IA avanzada</button>
+          <small>Las consultas técnicas siguen funcionando con el motor local.</small>
         </div>
       </div>
       <button id="forget" class="secondary">Recargar datos del motor</button>
@@ -617,6 +630,89 @@ function resolveOCIntelligent(mufa){
  // Regla 3: si ninguna OC cargada posee equipos, mantener la original
  // y reportar explícitamente la ausencia.
  return {ocRes:original,eq:[],switched:false,original,noAlternative:true};
+}
+
+
+function normTxt(v){
+ return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+}
+function allPropText(p){
+ return Object.entries(p||{}).map(([k,v])=>`${k} ${Array.isArray(v)?v.join(' '):v??''}`).join(' ');
+}
+function equipmentOCValue(x){
+ const p=x?.p||{};
+ const direct=p['Nemonico OC'] ?? p['Nemónico OC'] ?? p['NEMONICO OC'] ?? p['NEMONICO_OC']
+   ?? p['Oficina central'] ?? p['Oficina Central'] ?? p['OFICINA CENTRAL'];
+ return direct==null?'':String(direct).trim();
+}
+function knownOCInQuestion(question){
+ const q=normTxt(question),candidates=new Set();
+ for(const x of S.fen){const oc=equipmentOCValue(x);if(oc)candidates.add(oc)}
+ for(const x of S.ocs){const oc=bestOCLabel(x.p);if(oc)candidates.add(String(oc).trim())}
+ return [...candidates].filter(Boolean).sort((a,b)=>b.length-a.length)
+   .find(oc=>q.includes(normTxt(oc)))||'';
+}
+function extractEquipmentModels(question){
+ const q=normTxt(question);
+ const stop=new Set(['CUANTOS','CUANTAS','HAY','TIPO','TIPOS','SWITCH','SWITCHES','EQUIPO','EQUIPOS',
+  'GENERAL','TOTAL','TOTALES','OC','CENTRAL','OFICINA','TIENE','TIENEN','DAME','BUSCA','BUSCAR',
+  'MODELO','MODELOS','FEN','MEN','QUE','CUALES','CUAL']);
+ const toks=q.match(/\b[A-Z]{1,8}[-_]?\d{1,6}[A-Z0-9_-]*\b/g)||[];
+ return [...new Set(toks.filter(t=>!stop.has(t)))];
+}
+function equipmentRowsForOC(oc){
+ if(!oc)return S.fen;
+ const target=normTxt(oc);
+ return S.fen.filter(x=>normTxt(equipmentOCValue(x))===target);
+}
+function countEquipmentModels(models,oc=''){
+ const rows=equipmentRowsForOC(oc);
+ return models.map(model=>{
+   const target=normTxt(model);
+   const matches=rows.filter(x=>normTxt(allPropText(x.p)).includes(target));
+   return {model,count:matches.length,matches};
+ });
+}
+function genericEquipmentInventory(question){
+ const models=extractEquipmentModels(question);
+ if(!models.length)return null;
+ const oc=knownOCInQuestion(question),counts=countEquipmentModels(models,oc);
+ const total=counts.reduce((a,b)=>a+b.count,0);
+ return {handled:true,oc,models,counts,total,
+   answer:`Inventario de equipos ${oc?`en la OC ${oc}`:'en toda la base FEN/MEN'}:
+${counts.map(x=>`• ${x.model}: ${x.count}`).join('\n')}
+• Total para los modelos consultados: ${total}`};
+}
+function currentAIContext(){
+ const L=S.last;
+ return {current_case:L?{
+   cliente:{lat:L.lat,lon:L.lon},mufa:{id:L.mufa?.id,codigo:L.mufa?.code},
+   oc:L.ocRes?.value,equipos:(L.eq||[]).map(x=>x.p||{}).slice(0,20),
+   ruta_cliente_mufa_m:L.routeMeters||null,ruta_mufa_oc_m:L.ocRoute?.distanceM||null,
+   costo_sigo:L.econ?.configured?L.econ.total:null,factibilidad:L.valuation?.score??null
+ }:null,bases:{mufas:S.mufas.length,oc:S.ocs.length,fen_men:S.fen.length,postes_cuadrante:S.postesViewportCount||0}};
+}
+async function refreshAIStatus(){
+ const el=$('aiStatusInfo'),btn=$('aiConnectBtn');if(!el)return;
+ try{
+   const r=await fetch('/api/ai/status',{cache:'no-store'});if(!r.ok)throw new Error();
+   const s=await r.json();
+   if(s.configured){
+     if($('topAI'))$('topAI').textContent='OPENAI';
+     el.textContent=`IA OpenAI activa · ${s.model}`;el.classList.add('ok-ai');
+     if(btn)btn.textContent='IA OpenAI conectada';
+   }else{
+     el.textContent='IA avanzada no configurada · NEXO usa motor local';
+     if(btn)btn.textContent='Configurar IA avanzada';
+   }
+ }catch(e){el.textContent='IA avanzada no disponible · motor local activo'}
+}
+async function askOpenAI(question){
+ try{
+   const r=await fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({question,context:currentAIContext()})});
+   if(!r.ok)return null;const data=await r.json();return data.answer||null;
+ }catch(e){return null}
 }
 
 function addMsg(text,who='bot'){
@@ -1323,6 +1419,9 @@ function handle(text){
 • Método: ${oc.source}`);return;
  }
 
+ const inv=genericEquipmentInventory(t);
+ if(inv){addMsg(inv.answer);return;}
+
  const c=extractCoords(t);
  if(c){
    analyze(c.lat,c.lon,(low.includes('que mufa')||low.includes('mufa mas cerca'))?'mufa':'factibilidad').catch(e=>addMsg('Error al calcular: '+e.message));return;
@@ -1402,6 +1501,12 @@ $('chatForm').addEventListener('submit',e=>{e.preventDefault();const t=$('prompt
 $('q1').addEventListener('click',()=>{$('prompt').value='Calcula la factibilidad de este cliente: -33.5743795, -70.5590754';$('prompt').focus()});
 $('qBackup').addEventListener('click',()=>handle('Dame un respaldo'));
 $('q2').addEventListener('click',()=>handle('Estado de las bases'));
+$('qInventory')?.addEventListener('click',()=>handle('¿Cuántos Switch tipo SW93, PE40 hay en general?'));
+$('aiConnectBtn')?.addEventListener('click',()=>{
+ addMsg('Para activar IA avanzada, configura OPENAI_API_KEY en Render → Environment. La conexión usa la OpenAI API del servidor.');
+ $('configDrawer')?.classList.add('open');
+});
+
 
 $('sideMapBtn')?.addEventListener('click',()=>renderCurrentMap());
 $('sideQueryBtn')?.addEventListener('click',()=>$('prompt')?.focus());
@@ -1477,7 +1582,7 @@ loadBaseDataFromServer().catch(e=>{
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.7 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.8 Render · Fibra Óptica Inteligente';
 });
 </script>
 
