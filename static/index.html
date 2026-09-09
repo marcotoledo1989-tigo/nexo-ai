@@ -189,13 +189,22 @@ body{overflow-x:hidden}
  font-size:11px;color:#bfeeff;backdrop-filter:blur(8px)
 }
 .v31-poste-icon{
- width:10px;height:18px;position:relative;filter:drop-shadow(0 0 4px rgba(255,255,255,.55))
+ width:12px;height:19px;position:relative;
+ filter:drop-shadow(0 0 2px rgba(20,200,255,.60));
+ pointer-events:auto
 }
 .v31-poste-icon:before{
- content:"";position:absolute;left:4px;top:0;width:2px;height:18px;background:#fff;border-radius:2px
+ content:"";position:absolute;left:5px;top:1px;width:2px;height:18px;
+ background:#fff;border-radius:2px
 }
 .v31-poste-icon:after{
- content:"";position:absolute;left:0;top:4px;width:10px;height:2px;background:#fff;border-radius:2px
+ content:"";position:absolute;left:1px;top:4px;width:10px;height:2px;
+ background:#fff;border-radius:2px
+}
+.v31-poste-icon i{
+ position:absolute;left:3px;top:7px;width:5px;height:2px;
+ background:#dff8ff;border-radius:2px;transform:rotate(-38deg);
+ transform-origin:left center
 }
 .v31-quadrant-box{
  position:absolute;z-index:845;bottom:10px;left:10px;
@@ -260,7 +269,9 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
 .legend-mufa{width:17px;height:17px;border-radius:50%;background:#ffae2c;border:4px solid #111;outline:2px solid white}
 .legend-industry{width:18px;height:14px;background:#1178ff;border:2px solid white}
 .legend-route{width:31px;height:5px;border-radius:4px;display:inline-block}.legend-route.red{background:#fb384e}.legend-route.blue{background:#1178ff}
-.legend-pole{width:17px;height:17px;display:inline-grid;place-items:center;background:#12aee8;border:2px solid #fff;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);font-size:0}.legend-pole:before{content:"P";font-size:9px;font-weight:900;color:#fff;transform:rotate(45deg)}.legend-pole:after{display:none}
+.legend-pole{width:12px;height:19px;position:relative;display:inline-block}
+.legend-pole:before{content:"";position:absolute;left:5px;top:1px;width:2px;height:18px;background:#fff;border-radius:2px}
+.legend-pole:after{content:"";position:absolute;left:1px;top:4px;width:10px;height:2px;background:#fff;border-radius:2px}
 .case-panel{border:1px solid rgba(18,191,252,.35);border-radius:12px;background:linear-gradient(180deg,#071b2e,#041320);padding:13px;min-width:0}.case-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid #173b54}.case-head span{font-size:10px;font-weight:800;background:#425464;color:white;border-radius:6px;padding:6px 9px}.case-head span.ok{background:#12df8a;color:#062316}.case-title{font-weight:800;margin:12px 0 6px;padding-top:8px;border-top:1px solid #173b54}.case-block{display:grid;gap:2px}.case-block>div{display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:6px;background:#09233a}.case-block span{color:#a8c0d0;font-size:11px}.case-block b{font-size:11px;text-align:right;max-width:155px;overflow:hidden;text-overflow:ellipsis}.economic-pro .total{background:linear-gradient(90deg,#087b9d,#0d5f78)}.action-pro{width:100%;margin-top:9px;background:#083b61!important;border:1px solid #1687bd!important;color:#bfeeff!important;padding:9px!important}
 .bottom-row{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:10px;margin-top:10px}
 .agent-console,.activity-panel{border:1px solid rgba(18,191,252,.3);border-radius:12px;background:#05172a;padding:12px}.console-title{display:flex;align-items:center;gap:8px}.console-title span{color:#28cbff}.console-title button{margin-left:auto;padding:6px 10px!important}.agent-console .messages{max-height:130px;min-height:70px;margin:8px 0;border-top:1px solid #153650;border-bottom:1px solid #153650;padding:8px 0;overflow:auto}.agent-console .msg{font-size:11px!important;padding:7px 10px!important}.composer-pro{display:grid;grid-template-columns:1fr 50px;gap:7px}.composer-pro input{height:45px;border-radius:12px!important}.send-pro{border-radius:50%!important;width:44px!important;height:44px!important;font-size:20px!important;padding:0!important}.quick-pro{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.quick-pro button{font-size:10px!important;padding:7px 12px!important;border-radius:999px!important}
@@ -336,7 +347,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
       <small>Disponible</small>
       <span id="engineDot" class="dot hidden"></span>
     </div>
-    <div class="sidebar-version">NEXO AI v3.8<br><span>Render · 2026</span></div>
+    <div class="sidebar-version">NEXO AI v3.9<br><span>Render · 2026</span></div>
   </aside>
 
   <main class="nexo-main">
@@ -414,13 +425,14 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
           <div class="msg bot">NEXO: Hola. Puedo analizar factibilidad, rutas, Oficina Central, equipos FEN/MEN, costos y postación.</div>
         </div>
         <form id="chatForm" class="composer-pro">
-          <input id="prompt" type="text" autocomplete="off" placeholder="Escribe aquí tu consulta…" />
+          <input id="prompt" type="text" autocomplete="off" placeholder="Coordenadas, dirección o consulta abierta…" />
           <button class="send-pro" type="submit">➤</button>
         </form>
         <div class="quick-pro">
           <button id="q1">Calcular factibilidad</button>
           <button id="q2">Estado de bases</button>
           <button id="qInventory">Inventario FEN/MEN</button>
+          <button id="qAddress">Buscar por dirección</button>
           <button id="qMap">Mostrar ruta y postes</button>
         </div>
       </section>
@@ -713,6 +725,36 @@ async function askOpenAI(question){
      body:JSON.stringify({question,context:currentAIContext()})});
    if(!r.ok)return null;const data=await r.json();return data.answer||null;
  }catch(e){return null}
+}
+
+
+function cleanAddressQuery(text){
+ let s=String(text||'').trim();
+ s=s.replace(/^(calcula(r)?|evalu(a|ar)|analiza(r)?|busca(r)?|buscar|consulta(r)?|factibilidad)\s+/i,'');
+ s=s.replace(/^(la\s+)?(direcci[oó]n|cliente)\s*[:\-]?\s*/i,'');
+ s=s.replace(/^(en|para)\s+/i,'');
+ return s.trim();
+}
+
+function looksLikeAddress(text){
+ const s=String(text||'').trim();
+ if(extractCoords(s))return false;
+ const hasNumber=/\b\d{1,6}[A-Za-z]?\b/.test(s);
+ const hasAddressWord=/\b(direcci[oó]n|calle|avenida|av\.?|camino|pasaje|psje\.?|ruta|altura|n[uú]mero|n°)\b/i.test(s);
+ const hasComma=(s.match(/,/g)||[]).length>=1;
+ return hasNumber && (hasAddressWord || hasComma);
+}
+
+async function geocodeAddress(address){
+ const q=cleanAddressQuery(address);
+ const r=await fetch(`/api/geocode?q=${encodeURIComponent(q)}`,{cache:'no-store'});
+ if(!r.ok){
+   const data=await r.json().catch(()=>({}));
+   throw new Error(data.error||`Geocodificación HTTP ${r.status}`);
+ }
+ const data=await r.json();
+ if(!data.results?.length)throw new Error('No encontré esa dirección en el geocodificador.');
+ return data.results[0];
 }
 
 function addMsg(text,who='bot'){
@@ -1114,8 +1156,8 @@ function nexoDivIcon(kind){
 function nexoPosteIcon(){
  return L.divIcon({
    className:'nexo-div-icon nexo-pole-leaflet',
-   html:'<div class="v31-poste-icon" title="Poste"></div>',
-   iconSize:[22,31],iconAnchor:[11,27],popupAnchor:[0,-28]
+   html:'<div class="v31-poste-icon" title="Poste"><i></i></div>',
+   iconSize:[12,19],iconAnchor:[6,18],popupAnchor:[0,-18]
  });
 }
 
@@ -1333,7 +1375,7 @@ ${top.map(x=>`• ${x.cod} · ${x.desc}: ${clp(x.sub)}`).join('\n')}`;
 }
 
 
-function handle(text){
+async function handle(text){
  const t=text.trim();if(!t)return;
  addMsg(t,'user');
  const low=normalizeIntentText(t);
@@ -1427,15 +1469,37 @@ function handle(text){
    analyze(c.lat,c.lon,(low.includes('que mufa')||low.includes('mufa mas cerca'))?'mufa':'factibilidad').catch(e=>addMsg('Error al calcular: '+e.message));return;
  }
 
- addMsg(`Puedo consultar la evaluación actual. Prueba con:
-• “¿Qué equipos FEN/MEN tiene esta OC?”
-• “Muéstrame el mapa”
-• “¿Cuántos postes encontraste?”
-• “¿Cuánto cuesta?”
-• “¿Por qué es factible?”
-• “¿Cuál es la ruta OC a mufa?”
-• “Dame un resumen”
-• “Dame un respaldo”`);
+ // Dirección + altura + comuna + ciudad
+ if(looksLikeAddress(t)){
+   try{
+     addMsg('Buscando la dirección y convirtiéndola a coordenadas…');
+     const g=await geocodeAddress(t);
+     addMsg(`Dirección encontrada:
+• ${g.display_name}
+• Coordenadas: ${Number(g.lat).toFixed(6)}, ${Number(g.lon).toFixed(6)}
+
+Ejecutaré la factibilidad usando ese punto.`);
+     await analyze(Number(g.lat),Number(g.lon),'factibilidad');
+     return;
+   }catch(e){
+     addMsg(`No pude resolver la dirección automáticamente: ${e.message}`);
+     return;
+   }
+ }
+
+ // Consulta abierta: se deriva a OpenAI con contexto del caso actual.
+ const aiAnswer=await askOpenAI(t);
+ if(aiAnswer){
+   addMsg(aiAnswer);
+   return;
+ }
+
+ addMsg(`Puedo trabajar de tres formas:
+• Coordenadas: “-33.574393, -70.559030”
+• Dirección: “Avenida Apoquindo 3000, Las Condes, Santiago”
+• Consulta abierta: “Analiza este caso y dime los principales riesgos”
+
+También puedes preguntar por inventario, OC, equipos, costos, postes, rutas y respaldo.`);
 }
 async function bindFile(id,key,info,type){
  $(id).addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;$(info).textContent='Procesando…';
@@ -1502,6 +1566,7 @@ $('q1').addEventListener('click',()=>{$('prompt').value='Calcula la factibilidad
 $('qBackup').addEventListener('click',()=>handle('Dame un respaldo'));
 $('q2').addEventListener('click',()=>handle('Estado de las bases'));
 $('qInventory')?.addEventListener('click',()=>handle('¿Cuántos Switch tipo SW93, PE40 hay en general?'));
+$('qAddress')?.addEventListener('click',()=>{ $('prompt').value='Avenida Apoquindo 3000, Las Condes, Santiago'; $('prompt').focus(); });
 $('aiConnectBtn')?.addEventListener('click',()=>{
  addMsg('Para activar IA avanzada, configura OPENAI_API_KEY en Render → Environment. La conexión usa la OpenAI API del servidor.');
  $('configDrawer')?.classList.add('open');
@@ -1582,7 +1647,7 @@ loadBaseDataFromServer().catch(e=>{
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.8 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.9 Render · Fibra Óptica Inteligente';
 });
 </script>
 
