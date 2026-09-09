@@ -219,136 +219,240 @@ body{overflow-x:hidden}
 }
 </style>
 
+
+<style id="nexo-v36-dashboard">
+:root{
+ --n-bg:#020a13;--n-panel:#061729;--n-panel2:#081d31;--n-line:#0d5d87;
+ --n-cyan:#12bffc;--n-blue:#1178ff;--n-green:#12df8a;--n-red:#fb384e;
+ --n-amber:#ffae2c;--n-text:#edf9ff;--n-muted:#89a9be;
+}
+body{margin:0!important;background:#020a13!important;color:var(--n-text)!important;overflow-x:hidden}
+.nexo-shell{min-height:100vh;display:grid;grid-template-columns:185px minmax(0,1fr);grid-template-rows:82px auto;background:
+ radial-gradient(circle at 70% -10%,rgba(17,120,255,.18),transparent 28%),
+ linear-gradient(135deg,#020812,#031321 55%,#020911)}
+.nexo-topbar{grid-column:1/-1;display:grid;grid-template-columns:315px 1fr 310px;align-items:center;
+ border:1px solid rgba(18,191,252,.28);border-radius:0 0 18px 18px;padding:0 24px;background:rgba(2,14,27,.94);
+ box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:20}
+.brand-block{display:flex;align-items:center;gap:14px}.brand-diamond{font-size:38px;color:#49d2ff;text-shadow:0 0 20px #1178ff}
+.brand-title{font-size:31px;font-weight:900;letter-spacing:1px}.brand-title span{color:#1aa9ff}.brand-sub{font-size:10px;letter-spacing:1.7px}
+.top-nav{display:flex;gap:25px;align-items:center;color:#c7d8e5;font-size:14px}.top-nav i{height:24px;width:1px;background:#214058}.top-nav .slogan{color:#7f9bae}
+.top-user{justify-self:end;display:flex;align-items:center;gap:10px}.top-user small{display:block;color:#89a9be}.user-icon{width:38px;height:38px;border-radius:50%;border:2px solid #6d65ff;display:grid;place-items:center}.top-status{font-size:10px;color:#50f5b6;margin-left:8px}
+.nexo-sidebar{grid-row:2;position:sticky;top:0;height:calc(100vh - 82px);padding:18px 13px;display:flex;flex-direction:column;gap:8px;
+ border-right:1px solid rgba(18,191,252,.22);background:linear-gradient(180deg,#03172b,#020b15)}
+.side-nav{height:53px;border:0;background:transparent;color:#dcecf6;display:flex;align-items:center;gap:14px;padding:0 16px;border-radius:11px;font-size:14px;text-align:left}
+.side-nav:first-letter{font-size:21px}.side-nav.active,.side-nav:hover{background:linear-gradient(90deg,#07588b,#073b66);color:#55d8ff;border:1px solid rgba(18,191,252,.35)}
+.nexo-bot-card{margin-top:auto;border:1px solid rgba(18,191,252,.35);border-radius:12px;padding:12px;background:#082344}.nexo-bot-face{width:70px;height:54px;border-radius:28px 28px 18px 18px;background:linear-gradient(160deg,#8fe9ff,#1178ff);margin:-42px auto 10px;display:flex;align-items:center;justify-content:center;gap:13px;color:#001c30;box-shadow:0 0 30px rgba(18,191,252,.45)}.nexo-bot-card p{font-size:12px;line-height:1.5;color:#aec6d6}
+.system-card{padding:10px 3px;font-size:11px}.system-card>div{display:flex;align-items:center;gap:7px;margin-top:7px}.system-card small{color:#7f9eb4;margin-left:15px}.sys-dot{width:8px;height:8px;border-radius:50%;background:#50606c}.sys-dot.ok{background:#15e696;box-shadow:0 0 8px #15e696}.sidebar-version{font-size:10px;color:#cce3ef}.sidebar-version span{color:#68899e}
+.nexo-main{padding:14px 14px 20px;min-width:0}
+.kpi-row{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.kpi-pro{min-height:108px;border:1px solid rgba(18,191,252,.33);border-radius:12px;background:linear-gradient(145deg,rgba(6,29,49,.96),rgba(3,17,31,.97));padding:13px 16px;display:flex;flex-direction:column;justify-content:center;box-shadow:inset 0 1px rgba(255,255,255,.03)}
+.kpi-pro>span,.kpi-pro>div>span{color:#a7c0d0;font-size:13px}.kpi-pro b{font-size:27px;margin:6px 0 2px}.kpi-pro small{color:#809bae}.kpi-pro.fact{flex-direction:row;align-items:center;justify-content:space-between}.kpi-ring{width:62px;height:62px;border-radius:50%;border:8px solid #10d992;border-right-color:#10394b;display:grid;place-items:center}.kpi-ring span{font-weight:900;color:#fff!important}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:10px}
+.map-panel{display:block!important;position:relative;height:535px;border:1px solid rgba(18,191,252,.35);border-radius:12px;overflow:hidden;background:#071523;padding:0!important;margin:0!important}
+#nexoMap{height:100%!important;border:0!important;border-radius:0!important}
+.map-mode-tabs{position:absolute;z-index:850;top:12px;left:12px;display:flex;background:rgba(4,18,32,.90);border-radius:8px;overflow:hidden;border:1px solid rgba(18,191,252,.3)}
+.map-tab{border:0!important;border-radius:0!important;background:transparent!important;padding:9px 18px!important;color:#d5e8f3!important}.map-tab.active{background:#53bdff!important;color:#001623!important;font-weight:800}
+.map-top-right{position:absolute;z-index:850;top:12px;right:12px;display:flex;gap:8px;align-items:center}.map-top-right span,.map-top-right button{background:rgba(3,18,32,.9);border:1px solid rgba(18,191,252,.3);border-radius:8px;padding:8px 10px;color:#d7eef9;font-size:11px}
+.map-scale-note{position:absolute;z-index:850;bottom:8px;left:10px;background:rgba(3,18,32,.8);padding:6px 9px;border-radius:6px;color:#a7ccde;font-size:9px}
+.map-legend-pro{position:absolute;z-index:850;right:12px;bottom:18px;width:220px;padding:12px;background:rgba(2,16,29,.92);border:1px solid rgba(18,191,252,.3);border-radius:10px;font-size:11px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.map-legend-pro b{display:block;margin-bottom:8px;font-size:14px}.map-legend-pro div{display:flex;align-items:center;gap:9px;margin:7px 0}
+.legend-house{width:17px;height:14px;background:#fb384e;display:inline-block;position:relative}.legend-house:before{content:"";position:absolute;width:13px;height:13px;background:#fb384e;transform:rotate(45deg);left:2px;top:-7px}
+.legend-mufa{width:17px;height:17px;border-radius:50%;background:#ffae2c;border:4px solid #111;outline:2px solid white}
+.legend-industry{width:18px;height:14px;background:#1178ff;border:2px solid white}
+.legend-route{width:31px;height:5px;border-radius:4px;display:inline-block}.legend-route.red{background:#fb384e}.legend-route.blue{background:#1178ff}
+.legend-pole{width:18px;height:24px;position:relative;display:inline-block;background:rgba(0,0,0,.55);border-radius:8px}.legend-pole:before{content:"";position:absolute;left:8px;top:3px;width:2px;height:18px;background:#fff}.legend-pole:after{content:"";position:absolute;left:3px;top:8px;width:12px;height:2px;background:#fff}
+.case-panel{border:1px solid rgba(18,191,252,.35);border-radius:12px;background:linear-gradient(180deg,#071b2e,#041320);padding:13px;min-width:0}.case-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid #173b54}.case-head span{font-size:10px;font-weight:800;background:#425464;color:white;border-radius:6px;padding:6px 9px}.case-head span.ok{background:#12df8a;color:#062316}.case-title{font-weight:800;margin:12px 0 6px;padding-top:8px;border-top:1px solid #173b54}.case-block{display:grid;gap:2px}.case-block>div{display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:6px;background:#09233a}.case-block span{color:#a8c0d0;font-size:11px}.case-block b{font-size:11px;text-align:right;max-width:155px;overflow:hidden;text-overflow:ellipsis}.economic-pro .total{background:linear-gradient(90deg,#087b9d,#0d5f78)}.action-pro{width:100%;margin-top:9px;background:#083b61!important;border:1px solid #1687bd!important;color:#bfeeff!important;padding:9px!important}
+.bottom-row{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:10px;margin-top:10px}
+.agent-console,.activity-panel{border:1px solid rgba(18,191,252,.3);border-radius:12px;background:#05172a;padding:12px}.console-title{display:flex;align-items:center;gap:8px}.console-title span{color:#28cbff}.console-title button{margin-left:auto;padding:6px 10px!important}.agent-console .messages{max-height:130px;min-height:70px;margin:8px 0;border-top:1px solid #153650;border-bottom:1px solid #153650;padding:8px 0;overflow:auto}.agent-console .msg{font-size:11px!important;padding:7px 10px!important}.composer-pro{display:grid;grid-template-columns:1fr 50px;gap:7px}.composer-pro input{height:45px;border-radius:12px!important}.send-pro{border-radius:50%!important;width:44px!important;height:44px!important;font-size:20px!important;padding:0!important}.quick-pro{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.quick-pro button{font-size:10px!important;padding:7px 12px!important;border-radius:999px!important}
+.activity-panel>b{font-size:13px}.activity-list{display:grid;gap:9px;margin-top:12px}.activity-list span{font-size:10px;color:#a7c0d0}.activity-list span::first-letter{color:#12df8a}
+.config-drawer{position:fixed;z-index:2000;top:90px;right:-390px;width:370px;max-height:calc(100vh - 110px);overflow:auto;background:#06192b;border:1px solid #126b95;border-radius:12px;padding:14px;transition:.25s ease;box-shadow:0 20px 60px rgba(0,0,0,.55)}.config-drawer.open{right:15px}.config-head{display:flex;justify-content:space-between;align-items:center}.config-head button{background:transparent!important;border:0!important;font-size:22px!important}.config-grid{display:grid;gap:8px;margin:12px 0}.config-grid .file{background:#09243c!important}
+.hidden{display:none!important}
+
+/* Postes: símbolo visible, por encima de rutas */
+.v31-poste-icon{width:22px!important;height:31px!important;position:relative!important;background:rgba(0,10,18,.85)!important;border:1px solid rgba(255,255,255,.75)!important;border-radius:9px!important;box-shadow:0 0 12px rgba(19,203,255,.95),0 2px 5px rgba(0,0,0,.8)!important}
+.v31-poste-icon:before{content:""!important;position:absolute!important;left:10px!important;top:4px!important;width:2px!important;height:23px!important;background:#fff!important;border-radius:2px!important;box-shadow:0 0 4px #fff!important}
+.v31-poste-icon:after{content:""!important;position:absolute!important;left:4px!important;top:9px!important;width:14px!important;height:3px!important;background:#fff!important;border-radius:2px!important;box-shadow:0 0 4px #fff!important}
+.leaflet-marker-icon.nexo-div-icon{z-index:900!important}
+@media(max-width:1100px){.nexo-shell{grid-template-columns:72px 1fr}.side-nav span,.nexo-bot-card,.system-card,.sidebar-version{display:none}.top-nav{display:none}.nexo-topbar{grid-template-columns:1fr auto}.kpi-row{grid-template-columns:repeat(3,1fr)}.workspace,.bottom-row{grid-template-columns:1fr}.case-panel,.activity-panel{display:none}}
+@media(max-width:720px){.nexo-shell{grid-template-columns:1fr}.nexo-sidebar{display:none}.nexo-topbar{grid-template-columns:1fr}.top-user{display:none}.nexo-main{padding:8px}.kpi-row{grid-template-columns:repeat(2,1fr)}.map-panel{height:420px}.map-legend-pro{width:180px;font-size:9px}}
+</style>
+
 </head>
 <body>
-<div class="wrap">
-  <div class="hero">
-    <div class="avatar">🤖</div>
-    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4.2 Render · Agente inteligente de ingeniería FO</p></div>
-  </div>
-
-  
-<div class="v31-kpis">
-  <div class="v31-kpi"><span>Factibilidad</span><b id="v31Fact">—</b><small>Evaluación técnica</small></div>
-  <div class="v31-kpi"><span>Cliente → Mufa</span><b id="v31CM">—</b><small>Ruta vial</small></div>
-  <div class="v31-kpi"><span>Postes visibles</span><b id="v31Postes">0</b><small>GeoParquet · cuadrante actual</small></div>
-  <div class="v31-kpi"><span>Mufa → OC</span><b id="v31MO">—</b><small>Ruta vial</small></div>
-  <div class="v31-kpi"><span>Costo SIGO</span><b id="v31Costo">—</b><small>Estimación CLP</small></div>
-</div>
-<div class="layout">
-    <section class="card chat">
-      <div id="messages" class="messages" aria-live="polite">
-        <div class="msg bot">NEXO: Hola. Ahora trabajo con una evaluación principal y solo busco respaldo cuando tú me lo pides.
-
-Ejemplos:
-• “Calcula la factibilidad de este cliente: -33.5743795, -70.5590754”
-• “¿Qué mufa está más cerca de -33.57, -70.55?”
-• “Dame un respaldo”
-• “¿Qué OC corresponde a la mufa 331641?”</div>
+<div class="nexo-shell">
+  <header class="nexo-topbar">
+    <div class="brand-block">
+      <div class="brand-diamond">◇</div>
+      <div>
+        <div class="brand-title">NEXO <span>AI</span></div>
+        <div class="brand-sub">FIBRA ÓPTICA INTELIGENTE</div>
       </div>
-      <div class="quick">
-        <button id="q1" class="secondary">Ejemplo factibilidad</button>
-        <button id="qBackup" class="secondary">Dame un respaldo</button>
-        <button id="q2" class="secondary">Estado de bases</button>
-<button id="qEquip" class="secondary">Equipos de esta OC</button>
-<button id="qMap" class="secondary">Mostrar mapa</button>
-<button id="qSummary" class="secondary">Resumen</button>
+    </div>
+    <div class="top-nav">
+      <span>Planifica</span><span>Analiza</span><span>Decide</span>
+      <i></i><span class="slogan">Más conectividad, menos incertidumbre</span>
+    </div>
+    <div class="top-user">
+      <div class="user-icon">◉</div>
+      <div><b>NEXO AI</b><small>Ingeniería FO</small></div>
+      <span class="top-status">● ONLINE</span>
+    </div>
+  </header>
+
+  <aside class="nexo-sidebar">
+    <button class="side-nav active">⌂<span>Inicio</span></button>
+    <button class="side-nav" id="sideMapBtn">⌖<span>Mapa</span></button>
+    <button class="side-nav" id="sideQueryBtn">◉<span>Consultas</span></button>
+    <button class="side-nav">▥<span>Análisis</span></button>
+    <button class="side-nav">▤<span>Reportes</span></button>
+    <button class="side-nav" id="sideConfigBtn">⚙<span>Configuración</span></button>
+
+    <div class="nexo-bot-card">
+      <div class="nexo-bot-face"><span>●</span><span>●</span></div>
+      <b>Hola, soy NEXO</b>
+      <p>Tu asistente de ingeniería FO. ¿En qué te puedo ayudar hoy?</p>
+    </div>
+
+    <div class="system-card">
+      <div><i class="sys-dot ok"></i><span>Bases de datos</span></div>
+      <small id="engineText">Esperando motor NEXO…</small>
+      <div><i class="sys-dot ok"></i><span>OSRM (Rutas)</span></div>
+      <small>En línea</small>
+      <div><i class="sys-dot ok"></i><span>SIGO (Costos)</span></div>
+      <small>Disponible</small>
+      <span id="engineDot" class="dot hidden"></span>
+    </div>
+    <div class="sidebar-version">NEXO AI v3.6<br><span>Render · 2026</span></div>
+  </aside>
+
+  <main class="nexo-main">
+    <section class="kpi-row">
+      <div class="kpi-pro fact">
+        <div><span>Factibilidad</span><b id="v31Fact">—</b><small id="kpiDecision">Evaluación técnica</small></div>
+        <div class="kpi-ring"><span id="kpiRingText">—</span></div>
       </div>
-      <form id="chatForm" class="composer">
-        <input id="prompt" type="text" autocomplete="off" placeholder="Escríbele a NEXO…" />
-        <button class="primary" type="submit">Consultar</button>
-      </form>
+      <div class="kpi-pro"><span>Distancia Cliente–Mufa</span><b id="v31CM">—</b><small>Ruta vial OSRM</small></div>
+      <div class="kpi-pro"><span>Postes visibles</span><b id="v31Postes">0</b><small>GeoParquet · cuadrante actual</small></div>
+      <div class="kpi-pro"><span>Distancia Mufa–OC</span><b id="v31MO">—</b><small>Ruta vial OSRM</small></div>
+      <div class="kpi-pro"><span>Costo SIGO</span><b id="v31Costo">—</b><small>Estimación CLP</small></div>
     </section>
 
-    <aside class="card side">
-      <h2>Fuentes de datos</h2>
-      <div class="files">
+    <section class="workspace">
+      <section id="nexoMapCard" class="map-panel show">
+        <div class="map-mode-tabs">
+          <button id="mapStreetBtn" class="map-tab active">Mapa</button>
+          <button id="mapSatBtn" class="map-tab">Satélite</button>
+          <button id="mapHybridBtn" class="map-tab">Híbrido</button>
+        </div>
+        <div class="map-top-right">
+          <span id="v31PostStatus">Postes: esperando capa</span>
+          <button id="mapFullscreenBtn">⛶</button>
+        </div>
+        <div id="nexoMap"></div>
+        <div class="map-scale-note" id="v31Bounds">Cuadrante visible</div>
+        <div class="map-legend-pro">
+          <b>Simbología</b>
+          <div><span class="legend-house"></span> Cliente</div>
+          <div><span class="legend-mufa"></span> Mufa</div>
+          <div><span class="legend-industry"></span> Oficina Central</div>
+          <div><span class="legend-route red"></span> Ruta Cliente – Mufa</div>
+          <div><span class="legend-route blue"></span> Ruta Mufa – OC</div>
+          <div><span class="legend-pole"></span> Poste visible</div>
+        </div>
+        <button id="closeMap" class="hidden" type="button">Ocultar mapa</button>
+        <div id="mapSubtitle" class="hidden">Cliente → Mufa → OC</div>
+      </section>
+
+      <aside class="case-panel">
+        <div class="case-head"><b>Detalle del caso</b><span id="caseStatus">SIN EVALUAR</span></div>
+        <div class="case-block">
+          <div><span>Cliente</span><b id="caseClient">—</b></div>
+          <div><span>Mufa seleccionada</span><b id="caseMufa">—</b></div>
+          <div><span>Oficina Central</span><b id="caseOC">—</b></div>
+          <div><span>Equipos FEN/MEN</span><b id="caseEquip">—</b></div>
+        </div>
+        <div class="case-title">Ruta</div>
+        <div class="case-block">
+          <div><span>Cliente – Mufa</span><b id="caseCM">—</b></div>
+          <div><span>Cable (+10%)</span><b id="caseCable">—</b></div>
+          <div><span>Mufa – OC</span><b id="caseMO">—</b></div>
+          <div><span>Postes en cuadrante</span><b id="casePostes">0</b></div>
+        </div>
+        <div class="case-title">Evaluación económica (SIGO)</div>
+        <div class="case-block economic-pro">
+          <div><span>Ingeniería</span><b id="caseIng">—</b></div>
+          <div><span>Mano de Obra</span><b id="caseMOcost">—</b></div>
+          <div><span>Materiales</span><b id="caseMat">—</b></div>
+          <div class="total"><span>Total estimado</span><b id="caseTotal">—</b></div>
+        </div>
+        <button id="qEquip" class="action-pro">Consultar equipos OC</button>
+        <button id="qBackup" class="action-pro">Dame un respaldo</button>
+      </aside>
+    </section>
+
+    <section class="bottom-row">
+      <section class="agent-console">
+        <div class="console-title"><span>◉</span><b>Pregunta a NEXO o escribe un comando</b><button id="qSummary">Resumen</button></div>
+        <div id="messages" class="messages" aria-live="polite">
+          <div class="msg bot">NEXO: Hola. Puedo analizar factibilidad, rutas, Oficina Central, equipos FEN/MEN, costos y postación.</div>
+        </div>
+        <form id="chatForm" class="composer-pro">
+          <input id="prompt" type="text" autocomplete="off" placeholder="Escribe aquí tu consulta…" />
+          <button class="send-pro" type="submit">➤</button>
+        </form>
+        <div class="quick-pro">
+          <button id="q1">Calcular factibilidad</button>
+          <button id="q2">Estado de bases</button>
+          <button id="qMap">Mostrar ruta y postes</button>
+        </div>
+      </section>
+
+      <aside class="activity-panel">
+        <b>Actividad del agente</b>
+        <div class="activity-list">
+          <span>✓ Mufas y OC listas</span>
+          <span>✓ Ruta Cliente–Mufa</span>
+          <span>✓ Ruta Mufa–OC</span>
+          <span>✓ Consulta FEN/MEN</span>
+          <span>✓ Cubicación SIGO</span>
+          <span>✓ NEXO contextual</span>
+        </div>
+      </aside>
+    </section>
+
+    <section id="configDrawer" class="config-drawer">
+      <div class="config-head"><b>Fuentes de datos</b><button id="configCloseBtn">×</button></div>
+      <div class="config-grid">
         <div class="file"><b>Mufas TIGO</b><small id="mufasInfo">Motor servidor · consultando…</small></div>
         <div class="file"><b>OC</b><small id="ocInfo">Motor servidor · consultando…</small></div>
         <div class="file"><b>Equipos FEN / MEN</b><small id="fenInfo">Motor servidor · consultando…</small></div>
         <div class="file"><b>Postes Nacional · GeoParquet</b>
-<small id="postesInfo">No cargado · carga manual por sesión</small>
-<input id="postesUploadFile" type="file" accept=".parquet,.pq,application/octet-stream">
-<button id="postesUploadBtn" type="button" class="secondary" style="width:100%;margin-top:7px">Cargar GeoParquet temporal</button>
-<button id="postesDeleteBtn" type="button" class="secondary" style="width:100%;margin-top:7px">Descargar postes de la sesión</button>
-<small id="postesModeInfo">El archivo se elimina al reiniciar/dormir el servicio.</small>
-</div>
-
-      
-<div class="file" style="margin-top:8px;display:none">
-  <b>Evaluación económica manual</b>
-  <small>Valores CLP configurables. Déjalos en 0 si aún no tienes la tarifa.</small>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-    <label style="font-size:11px;color:var(--muted)">FO $/m<input id="cableCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
-    <label style="font-size:11px;color:var(--muted)">Instalación $/m<input id="installCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
-    <label style="font-size:11px;color:var(--muted)">Apoyo poste $/u<input id="poleCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
-    <label style="font-size:11px;color:var(--muted)">Costo fijo<input id="fixedCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
-  </div>
-</div>
-
-<div class="status"><span id="engineDot" class="dot"></span><span id="engineText">Carga Mufas TIGO.</span></div>
-
-      <div id="lastResult" class="result hidden">
-        <div class="result-grid">
-          <div class="metric"><span>Mufa ID</span><b id="mufaId">—</b></div>
-          <div class="metric"><span>Mufa Código</span><b id="mufaCode">—</b></div>
-          <div class="metric"><span>Oficina Central</span><b id="ocName">—</b></div>
-          <div class="metric"><span>Distancia directa</span><b id="distance">—</b></div>
-<div class="metric"><span>Ruta vial OSRM</span><b id="roadDistance">—</b></div>
-<div class="metric"><span>Cable +10%</span><b id="cableDistance">—</b></div>
-          <div class="metric"><span>MEN/FEN</span><b id="men">—</b></div>
-<div class="metric"><span>Postes visibles</span><b id="poleCount">NO EVALUADO</b></div>
-<div class="metric"><span>Fuente postes</span><b id="poleBufferInfo">—</b></div>
-<div class="metric"><span>Modo de carga</span><b id="poleSpacing">—</b></div>
-<div class="metric"><span>Valoración técnica</span><b id="valuation">—</b></div>
-<div class="metric"><span>Costo SIGO estimado</span><b id="economicCost">CALCULANDO</b></div>
-<div class="metric"><span>Base económica</span><b id="economicEval">SIGO · plantilla aérea</b></div>
-          <div id="backupMetric" class="metric hidden"><span>Respaldo solicitado</span><b id="backup">—</b></div>
+          <small id="postesInfo">No cargado · carga manual por sesión</small>
+          <input id="postesUploadFile" type="file" accept=".parquet,.pq,application/octet-stream">
+          <button id="postesUploadBtn" type="button" class="secondary">Cargar GeoParquet temporal</button>
+          <button id="postesDeleteBtn" type="button" class="secondary">Descargar postes de la sesión</button>
+          <small id="postesModeInfo">El archivo se elimina al reiniciar/dormir el servicio.</small>
         </div>
       </div>
+      <button id="forget" class="secondary">Recargar datos del motor</button>
+    </section>
 
-      <div style="margin-top:10px"><button id="forget" class="danger" type="button">Recargar datos del motor</button></div>
-      <p class="tip">NEXO AI v3.4.2 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
-    </aside>
-  
+    <!-- IDs técnicos conservados para el motor -->
+    <section class="hidden">
+      <div id="lastResult" class="result hidden">
+        <div id="mufaId"></div><div id="mufaCode"></div><div id="ocName"></div><div id="distance"></div>
+        <div id="roadDistance"></div><div id="cableDistance"></div><div id="men"></div>
+        <div id="poleCount"></div><div id="poleBufferInfo"></div><div id="poleSpacing"></div>
+        <div id="valuation"></div><div id="economicCost"></div><div id="economicEval"></div>
+        <div id="backupMetric" class="hidden"><span id="backup"></span></div>
+      </div>
+      <input id="cableCost" type="number" value="0">
+      <input id="installCost" type="number" value="0">
+      <input id="poleCost" type="number" value="0">
+      <input id="fixedCost" type="number" value="0">
+    </section>
+  </main>
 </div>
-</div>
-
-
-<div class="v3-agent-strip">
- <div class="v3-agent-step">Mufas / OC</div>
- <div class="v3-agent-step">Ruta OSRM</div>
- <div class="v3-agent-step">Buffer postes</div>
- <div class="v3-agent-step">FEN / MEN</div>
- <div class="v3-agent-step">SIGO costos</div>
- <div class="v3-agent-step">NEXO contextual</div>
-</div>
-<section id="nexoMapCard">
-  <div class="map-head">
-    <div>
-      <div class="map-title">Mapa de la evaluación</div>
-      <div id="mapSubtitle" class="map-sub">Mufa → OC → Cliente</div>
-    </div>
-    <button id="closeMap" class="secondary" type="button">Ocultar mapa</button>
-  </div>
-  
-<div style="position:relative">
-  <div class="v31-map-toolbar">
-    <div class="v31-map-chip">Mapa operativo · Cliente → Mufa → OC</div>
-    <div class="v31-map-chip" id="v31PostStatus">Postes: esperando capa</div>
-  </div>
-  <div id="nexoMap"></div>
-  <div class="v31-quadrant-box" id="v31Bounds">Cuadrante visible</div>
-</div>
-  <div class="map-legend">
-    <span><i class="legend-dot2 dot-oc2"></i>Oficina Central</span>
-    <span><i class="legend-line legend-oc"></i>Mufa → OC</span>
-    <span><i class="legend-dot2 dot-mufa2"></i>Mufa</span>
-    <span><i class="legend-line legend-client"></i>Cliente → Mufa</span>
-    <span><i class="legend-dot2 dot-client2"></i>Cliente</span>
-  </div>
-</section>
-
 <script>
 (()=>{
 const S={mufas:[],ocs:[],fen:[],postes:[],roads:[],last:null,map:null,mapLayers:[],viewportPosteLayer:null,postesParquetReady:false,postesParquetName:'',postesViewportCount:0,serverStatus:null};
@@ -421,7 +525,14 @@ function resolveOC(mufa){
  for(const k of directKeys){
    if(p[k]!=null && String(p[k]).trim()!==''){
      const value=String(p[k]).trim();
-     return {value,source:'Nemónico OC informado en mufa',obj:null};
+     const target=value.toUpperCase();
+     const obj=S.ocs.find(o=>String(bestOCLabel(o.p)||'').trim().toUpperCase()===target) || null;
+     return {
+       value,
+       source:'Nemónico OC informado en mufa',
+       obj,
+       siteHolder:obj?((obj.p||{})['Site Holde'] ?? null):null
+     };
    }
  }
  const near=ranked(S.ocs,mufa.lat,mufa.lon)[0];
@@ -444,6 +555,59 @@ function equipmentFor(ocValue){
    return real!=null && String(real).trim().toUpperCase()===target;
  });
 }
+
+function fenOCSet(){
+ const set=new Set();
+ for(const x of S.fen){
+   const p=x.p||{};
+   const v=p['Nemonico OC'] ?? p['Nemónico OC'] ?? p['NEMONICO OC'] ?? p['NEMONICO_OC'];
+   if(v!=null && String(v).trim()!=='')set.add(String(v).trim().toUpperCase());
+ }
+ return set;
+}
+
+function resolveOCIntelligent(mufa){
+ const original=resolveOC(mufa);
+ const originalEq=equipmentFor(original.value);
+
+ // Regla 1: conservar la OC original cuando sí posee FEN/MEN.
+ if(originalEq.length){
+   return {ocRes:original,eq:originalEq,switched:false,original};
+ }
+
+ // Regla 2: si la OC original no posee equipos, buscar desde la mufa
+ // la Oficina Central geográficamente más cercana cuyo Nemónico sí aparece
+ // en la base FEN/MEN.
+ const available=fenOCSet();
+ const rankedOCs=ranked(S.ocs,mufa.lat,mufa.lon);
+ const originalKey=String(original.value||'').trim().toUpperCase();
+
+ for(const candidate of rankedOCs){
+   const label=String(bestOCLabel(candidate.p)||'').trim();
+   const key=label.toUpperCase();
+   if(!label || key===originalKey || !available.has(key))continue;
+
+   const eq=equipmentFor(label);
+   if(!eq.length)continue;
+
+   const ocRes={
+     value:label,
+     source:`OC con FEN/MEN más cercana (${Math.round(candidate.d)} m desde la mufa)`,
+     obj:candidate,
+     siteHolder:(candidate.p||{})['Site Holde'] ?? null,
+     originalValue:original.value,
+     originalSource:original.source,
+     distanceFromMufa:candidate.d,
+     intelligentFallback:true
+   };
+   return {ocRes,eq,switched:true,original};
+ }
+
+ // Regla 3: si ninguna OC cargada posee equipos, mantener la original
+ // y reportar explícitamente la ausencia.
+ return {ocRes:original,eq:[],switched:false,original,noAlternative:true};
+}
+
 function addMsg(text,who='bot'){
  const d=document.createElement('div');d.className='msg '+(who==='user'?'user':'bot');d.textContent=(who==='bot'?'NEXO: ':'')+text;
  $('messages').appendChild(d);$('messages').scrollTop=$('messages').scrollHeight
@@ -644,7 +808,8 @@ function showResult(m,ocRes,eq,poles,valuation,econ){
 async function analyze(lat,lon,mode='factibilidad'){
  if(!S.mufas.length){addMsg('Primero carga la base Mufas TIGO.');return}
  const r=ranked(S.mufas,lat,lon),preferred=r.filter(x=>!generic(x)),m=preferred[0]||r[0];
- const ocRes=resolveOC(m),eq=equipmentFor(ocRes.value);
+ const smartOC=resolveOCIntelligent(m);
+ const ocRes=smartOC.ocRes,eq=smartOC.eq;
  addMsg('Calculando ruta vial bidireccional con OSRM…');
 
  let route=null,routeError='';
@@ -658,8 +823,8 @@ async function analyze(lat,lon,mode='factibilidad'){
  const econ=economicEvaluation(routeMeters,poles);
  const ocRoute=await calculateOCMufaRoute(ocRes,m);
 
- S.last={lat,lon,mufa:m,ocRes,eq,ranked:r,preferred,poles,valuation,econ,route,routeMeters,cableMeters,ocRoute};
- showResult(m,ocRes,eq,poles,valuation,econ);updateV31KPIs();
+ S.last={lat,lon,mufa:m,ocRes,eq,smartOC,ranked:r,preferred,poles,valuation,econ,route,routeMeters,cableMeters,ocRoute};
+ showResult(m,ocRes,eq,poles,valuation,econ);updateV31KPIs();renderCurrentMap();
  $('roadDistance').textContent=route?`${Math.round(routeMeters)} m`:`EST. ${Math.round(routeMeters)} m`;
  $('cableDistance').textContent=`${Math.round(cableMeters)} m`;
 
@@ -694,6 +859,8 @@ Ruta FO
 Oficina Central
 • ${ocRes.value}
 • Asociación: ${ocRes.source}
+${smartOC.switched?`• OC original descartada: ${smartOC.original.value} · SIN EQUIPOS FEN/MEN
+• Selección inteligente: se eligió la OC más cercana a la mufa que sí dispone de equipos`:''}
 
 MEN/FEN
 • ${S.fen.length?(eq.length?`CON RED · ${eq.length} equipo(s)`:'SIN RED MEN/FEN'):'NO EVALUADA'}
@@ -765,7 +932,7 @@ function routeSummaryText(){
  const L=S.last;
  return `Resumen de la evaluación actual:
 • Mufa: ${L.mufa?.code||L.mufa?.id||'—'} · ID ${L.mufa?.id||'—'}
-• Oficina Central: ${L.ocRes?.value||'—'}
+• Oficina Central: ${L.ocRes?.value||'—'}${L.smartOC?.switched?` (selección inteligente; original ${L.smartOC.original.value} sin equipos)`:''}
 • Equipos FEN/MEN: ${L.eq?.length??0}
 • Distancia directa Cliente→Mufa: ${Math.round(L.mufa?.d||0)} m
 • Ruta Mufa→Cliente: ${L.route?Math.round(L.routeMeters)+' m':'sin ruta vial'}
@@ -792,13 +959,32 @@ function clearNexoMapLayers(){
 function ensureNexoMap(){
  if(typeof L==='undefined')throw new Error('Leaflet no está disponible. Revisa la conexión a Internet.');
  if(!S.map){
-   S.map=L.map('nexoMap',{zoomControl:true});
-   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-     maxZoom:19,
-     attribution:'© OpenStreetMap'
-   }).addTo(S.map);
+   S.map=L.map('nexoMap',{zoomControl:true,preferCanvas:true}).setView([-33.45,-70.66],12);
+   S.streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+     maxZoom:19,attribution:'© OpenStreetMap'
+   });
+   S.satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+     maxZoom:19,attribution:'Tiles © Esri'
+   });
+   S.labelsLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',{
+     maxZoom:20,attribution:'© CARTO'
+   });
+   S.streetLayer.addTo(S.map);
+   S.mapBaseMode='street';
  }
  return S.map;
+}
+
+function setMapBase(mode){
+ const map=ensureNexoMap();
+ [S.streetLayer,S.satLayer,S.labelsLayer].forEach(l=>{if(l&&map.hasLayer(l))map.removeLayer(l)});
+ if(mode==='satellite'){S.satLayer.addTo(map)}
+ else if(mode==='hybrid'){S.satLayer.addTo(map);S.labelsLayer.addTo(map)}
+ else{S.streetLayer.addTo(map)}
+ S.mapBaseMode=mode;
+ ['mapStreetBtn','mapSatBtn','mapHybridBtn'].forEach(id=>$(id)?.classList.remove('active'));
+ const target=mode==='satellite'?'mapSatBtn':mode==='hybrid'?'mapHybridBtn':'mapStreetBtn';
+ $(target)?.classList.add('active');
 }
 
 
@@ -811,20 +997,43 @@ function nexoDivIcon(kind){
 
 function nexoPosteIcon(){
  return L.divIcon({
-   className:'nexo-div-icon',
-   html:'<div class="v31-poste-icon"></div>',
-   iconSize:[12,20],iconAnchor:[6,18],popupAnchor:[0,-16]
+   className:'nexo-div-icon nexo-pole-leaflet',
+   html:'<div class="v31-poste-icon" title="Poste"></div>',
+   iconSize:[22,31],iconAnchor:[11,27],popupAnchor:[0,-28]
  });
 }
 
 function updateV31KPIs(){
- const Ls=S.last;
- if(!Ls)return;
+ const Ls=S.last;if(!Ls)return;
+ const score=Ls.valuation?.score??0;
  const fact=$('v31Fact'),cm=$('v31CM'),mo=$('v31MO'),cost=$('v31Costo');
- if(fact)fact.textContent=`${Ls.valuation?.score??'—'}%`;
+ if(fact)fact.textContent=`${score}%`;
+ if($('kpiRingText'))$('kpiRingText').textContent=`${score}%`;
+ if($('kpiDecision'))$('kpiDecision').textContent=score>=80?'ALTA · Proyecto viable':score>=60?'MEDIA · Revisar':'BAJA · No recomendado';
  if(cm)cm.textContent=Ls.route?`${Math.round(Ls.routeMeters)} m`:'—';
  if(mo)mo.textContent=Ls.ocRoute?`${Math.round(Ls.ocRoute.distanceM)} m`:'—';
  if(cost)cost.textContent=Ls.econ?.configured?clp(Ls.econ.total):'—';
+
+ const status=$('caseStatus');if(status){
+   status.textContent=score>=80?'FACTIBLE':score>=60?'REVISAR':'NO RECOMENDADO';
+   status.classList.toggle('ok',score>=80);
+ }
+ if($('caseClient'))$('caseClient').textContent=`${Ls.lat.toFixed(6)}, ${Ls.lon.toFixed(6)}`;
+ if($('caseMufa'))$('caseMufa').textContent=`${Ls.mufa?.code||'—'} · ID ${Ls.mufa?.id||'—'}`;
+ if($('caseOC'))$('caseOC').textContent=Ls.ocRes?.value||'—';
+ if($('caseEquip'))$('caseEquip').textContent=Ls.eq?.length?`${Ls.eq.length} equipo(s)`:'SIN EQUIPOS';
+ if($('caseCM'))$('caseCM').textContent=Ls.route?`${Math.round(Ls.routeMeters)} m`:'—';
+ if($('caseCable'))$('caseCable').textContent=`${Math.round(Ls.cableMeters||0)} m`;
+ if($('caseMO'))$('caseMO').textContent=Ls.ocRoute?`${Math.round(Ls.ocRoute.distanceM)} m`:'—';
+ if($('casePostes'))$('casePostes').textContent=(S.postesViewportCount||0).toLocaleString('es-CL');
+
+ const C=Ls.econ?.cub;
+ if(C){
+   if($('caseIng'))$('caseIng').textContent=clp(C.totals.ing);
+   if($('caseMOcost'))$('caseMOcost').textContent=clp(C.totals.mo);
+   if($('caseMat'))$('caseMat').textContent=clp(C.totals.mat);
+   if($('caseTotal'))$('caseTotal').textContent=clp(C.totals.gen);
+ }
 }
 
 function clearViewportPostes(){
@@ -858,13 +1067,13 @@ async function renderViewportPostes(){
        p.tipo_propiedad?`Propiedad: ${p.tipo_propiedad}`:'',
        p.apoyo_comunicaciones!=null?`Apoyo comunicaciones: ${p.apoyo_comunicaciones}`:''
      ].filter(Boolean).join('<br>');
-     L.marker([Number(p.latitud),Number(p.longitud)],{icon:nexoPosteIcon(),interactive:true})
+     L.marker([Number(p.latitud),Number(p.longitud)],{icon:nexoPosteIcon(),interactive:true,zIndexOffset:1200})
        .bindPopup(detalle).addTo(group);
    }
    group.addTo(S.map);
    S.viewportPosteLayer=group;
    S.postesViewportCount=Number(result.total)||0;
-   const cnt=$('v31Postes');if(cnt)cnt.textContent=S.postesViewportCount.toLocaleString('es-CL');
+   const cnt=$('v31Postes');if(cnt)cnt.textContent=S.postesViewportCount.toLocaleString('es-CL');if($('casePostes'))$('casePostes').textContent=S.postesViewportCount.toLocaleString('es-CL');
    if(st)st.textContent=result.total>result.rows.length
       ?`Postes: ${Number(result.total).toLocaleString('es-CL')} · mostrando ${result.rows.length}`
       :`Postes: ${Number(result.total).toLocaleString('es-CL')} en cuadrante`;
@@ -1016,6 +1225,20 @@ function handle(text){
    addMsg(routeSummaryText());return;
  }
 
+
+ if((low.includes('oc')||low.includes('central'))&&(low.includes('equipo')||low.includes('equipos'))&&(low.includes('cercan')||low.includes('alternativa')||low.includes('otra'))){
+   if(!S.last){addMsg('Primero calcula una factibilidad.');return}
+   const x=S.last.smartOC;
+   if(x?.switched){
+     addMsg(`La OC original ${x.original.value} no tenía equipos FEN/MEN. Seleccioné ${S.last.ocRes.value}, que es la central con equipos más cercana a la mufa. Distancia aproximada desde la mufa: ${Math.round(S.last.ocRes.distanceFromMufa||0)} m. Equipos encontrados: ${S.last.eq.length}.`);
+   }else if(S.last.eq?.length){
+     addMsg(`La OC ${S.last.ocRes.value} ya dispone de ${S.last.eq.length} equipo(s) FEN/MEN, por lo que no fue necesario cambiarla.`);
+   }else{
+     addMsg('No encontré otra Oficina Central con equipos FEN/MEN dentro de las OC cargadas.');
+   }
+   return;
+ }
+
  if((low.includes('ruta')&&low.includes('oc')) || (low.includes('oc')&&low.includes('mufa')&&low.includes('distancia'))){
    if(!S.last){addMsg('Primero calcula una factibilidad.');return}
    addMsg(S.last.ocRoute?`La ruta vial entre ${S.last.ocRes.value} y la mufa ${S.last.mufa.code||S.last.mufa.id} es de ${Math.round(S.last.ocRoute.distanceM)} m.`:'No pude calcular una ruta vial Mufa → OC.');return;
@@ -1129,6 +1352,21 @@ $('q1').addEventListener('click',()=>{$('prompt').value='Calcula la factibilidad
 $('qBackup').addEventListener('click',()=>handle('Dame un respaldo'));
 $('q2').addEventListener('click',()=>handle('Estado de las bases'));
 
+$('sideMapBtn')?.addEventListener('click',()=>renderCurrentMap());
+$('sideQueryBtn')?.addEventListener('click',()=>$('prompt')?.focus());
+$('sideConfigBtn')?.addEventListener('click',()=>$('configDrawer')?.classList.add('open'));
+$('configCloseBtn')?.addEventListener('click',()=>$('configDrawer')?.classList.remove('open'));
+$('mapStreetBtn')?.addEventListener('click',()=>setMapBase('street'));
+$('mapSatBtn')?.addEventListener('click',()=>setMapBase('satellite'));
+$('mapHybridBtn')?.addEventListener('click',()=>setMapBase('hybrid'));
+$('mapFullscreenBtn')?.addEventListener('click',()=>{
+ const el=$('nexoMapCard');
+ if(!document.fullscreenElement)el?.requestFullscreen?.();
+ else document.exitFullscreen?.();
+ setTimeout(()=>S.map?.invalidateSize(),250);
+});
+
+
 async function uploadPostesTemporal(){
  const file=$('postesUploadFile')?.files?.[0];
  if(!file){addMsg('Selecciona primero el archivo GeoParquet de postes.');return}
@@ -1187,7 +1425,7 @@ loadBaseDataFromServer().catch(e=>{
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.4.2 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.6 Render · Fibra Óptica Inteligente';
 });
 </script>
 
