@@ -224,7 +224,7 @@ body{overflow-x:hidden}
 <div class="wrap">
   <div class="hero">
     <div class="avatar">🤖</div>
-    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4 Render · Agente inteligente de ingeniería FO</p></div>
+    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4.1 Render · Agente inteligente de ingeniería FO</p></div>
   </div>
 
   
@@ -308,7 +308,7 @@ Ejemplos:
       </div>
 
       <div style="margin-top:10px"><button id="forget" class="danger" type="button">Recargar datos del motor</button></div>
-      <p class="tip">NEXO AI v3.4 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
+      <p class="tip">NEXO AI v3.4.1 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
     </aside>
   
 </div>
@@ -1074,28 +1074,48 @@ async function bindFile(id,key,info,type){
 async function loadBaseDataFromServer(){
  try{
    const [mufasRes,ocRes,fenRes]=await Promise.all([
-     fetch('/api/base/mufas'),fetch('/api/base/oc'),fetch('/api/base/fen')
+     fetch('/api/base/mufas',{cache:'no-store'}),
+     fetch('/api/base/oc',{cache:'no-store'}),
+     fetch('/api/base/fen',{cache:'no-store'})
    ]);
+
+   const failures=[];
    if(mufasRes.ok){
-     const g=await mufasRes.json();S.mufas=featuresFrom(g).map(x=>norm(x,'mufa'));
-   }
+     const g=await mufasRes.json();
+     S.mufas=featuresFrom(g).map(x=>norm(x,'mufa'));
+   }else failures.push(`Mufas HTTP ${mufasRes.status}`);
+
    if(ocRes.ok){
-     const g=await ocRes.json();S.ocs=featuresFrom(g).map(x=>norm(x,'oc'));
-   }
+     const g=await ocRes.json();
+     S.ocs=featuresFrom(g).map(x=>norm(x,'oc'));
+   }else failures.push(`OC HTTP ${ocRes.status}`);
+
    if(fenRes.ok){
-     const g=await fenRes.json();S.fen=featuresFrom(g).map(x=>norm(x,'fen'));
-   }
+     const g=await fenRes.json();
+     S.fen=featuresFrom(g).map(x=>norm(x,'fen'));
+   }else failures.push(`FEN/MEN HTTP ${fenRes.status}`);
+
    updateEngine();
    await refreshServerStatus();
-   addMsg(`Bases del motor cargadas: ${S.mufas.length.toLocaleString('es-CL')} mufas · ${S.ocs.length.toLocaleString('es-CL')} OC · ${S.fen.length.toLocaleString('es-CL')} equipos.`);
- }catch(e){console.error(e);addMsg('No pude cargar las bases desde el motor NEXO.');}
+
+   if(failures.length){
+     addMsg(`Motor NEXO respondió, pero hay bases con error: ${failures.join(' · ')}`);
+   }else{
+     addMsg(`Bases del motor cargadas: ${S.mufas.length.toLocaleString('es-CL')} mufas · ${S.ocs.length.toLocaleString('es-CL')} OC · ${S.fen.length.toLocaleString('es-CL')} equipos.`);
+   }
+ }catch(e){
+   console.error(e);
+   addMsg(`No pude cargar las bases desde el motor NEXO: ${e.message}`);
+ }
 }
 
 function updateEngine(){
  const ok=S.mufas.length>0;
  $('engineDot').className='dot '+(ok?'ok':'');
- $('engineText').textContent=ok?`NEXO listo · ${S.mufas.length.toLocaleString('es-CL')} mufas`:'Esperando motor NEXO…';
-} mufas`:'Carga Mufas TIGO.'}
+ $('engineText').textContent=ok
+   ? `NEXO listo · ${S.mufas.length.toLocaleString('es-CL')} mufas`
+   : 'Esperando motor NEXO…';
+}
 
 
 
@@ -1174,7 +1194,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').cat
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.4 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.4.1 Render · Fibra Óptica Inteligente';
 });
 </script>
 
