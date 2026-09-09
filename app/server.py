@@ -1,8 +1,8 @@
 from __future__ import annotations
 from pathlib import Path
-import json, os, shutil
+import json, os, shutil, urllib.request, urllib.error
 import duckdb
-from fastapi import FastAPI, Query, UploadFile, File
+from fastapi import FastAPI, Query, UploadFile, File, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -19,7 +19,7 @@ FILES = {
     "fen": ["Equipos FEN por OC.geojson", "Equipos_FEN_por_OC.geojson"],
 }
 
-app = FastAPI(title="NEXO AI v3.4 Render")
+app = FastAPI(title="NEXO AI v3.8 Render")
 
 def find_file(kind: str):
     for name in FILES[kind]:
@@ -58,7 +58,7 @@ def parquet_count(path: Path):
 
 @app.get("/health")
 def health():
-    return {"ok": True, "service": "NEXO AI v3.4"}
+    return {"ok": True, "service": "NEXO AI v3.8"}
 
 @app.get("/api/status")
 def status():
@@ -141,5 +141,46 @@ def postes(
         return {"total":int(total),"rows":[dict(zip(cols,r)) for r in rows]}
     finally:
         con.close()
+
+
+@app.get("/api/ai/status")
+def ai_status():
+    key=os.getenv("OPENAI_API_KEY","").strip()
+    model=os.getenv("OPENAI_MODEL","gpt-5.6-luna").strip()
+    return {"configured":bool(key),"model":model if key else "","mode":"server_api" if key else "local_only"}
+
+def _extract_response_text(data:dict)->str:
+    if isinstance(data.get("output_text"),str) and data["output_text"].strip():
+        return data["output_text"].strip()
+    texts=[]
+    for item in data.get("output",[]) or []:
+        for c in item.get("content",[]) or []:
+            if isinstance(c.get("text"),str):texts.append(c["text"])
+    return "\n".join(texts).strip()
+
+@app.post("/api/ai/chat")
+async def ai_chat(request:Request):
+    key=os.getenv("OPENAI_API_KEY","").strip()
+    if not key:return JSONResponse({"error":"OPENAI_API_KEY no configurada"},status_code=503)
+    body=await request.json();question=str(body.get("question","")).strip();context=body.get("context") or {}
+    if not question:return JSONResponse({"error":"Pregunta vacía"},status_code=400)
+    model=os.getenv("OPENAI_MODEL","gpt-5.6-luna").strip()
+    payload={"model":model,"input":[
+      {"role":"system","content":[{"type":"input_text","text":
+       "Eres NEXO AI, asistente técnico de ingeniería de fibra óptica. Responde en español, breve y operacional. No inventes datos técnicos."}]},
+      {"role":"user","content":[{"type":"input_text","text":
+       f"CONTEXTO NEXO:\n{json.dumps(context,ensure_ascii=False)}\n\nPREGUNTA:\n{question}"}]}
+    ],"max_output_tokens":700}
+    req=urllib.request.Request("https://api.openai.com/v1/responses",
+      data=json.dumps(payload).encode("utf-8"),
+      headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},method="POST")
+    try:
+        with urllib.request.urlopen(req,timeout=60) as resp:data=json.loads(resp.read().decode("utf-8"))
+        text=_extract_response_text(data)
+        return {"answer":text,"model":model} if text else JSONResponse({"error":"Sin texto"},status_code=502)
+    except urllib.error.HTTPError as e:
+        return JSONResponse({"error":"OpenAI API error","detail":e.read().decode("utf-8","ignore")[:1000]},status_code=502)
+    except Exception as e:return JSONResponse({"error":str(e)},status_code=502)
+
 
 app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
