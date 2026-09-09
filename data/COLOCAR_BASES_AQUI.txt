@@ -1,0 +1,7 @@
+Sube a esta carpeta del repositorio:
+1. Mufas TIGO.geojson
+2. OC_TIGO.geojson
+3. Equipos FEN por OC.geojson
+
+NO subas Postes_Electricos_Nacional_GeoLibre.parquet.
+NEXO v3.4 lo carga manualmente y temporalmente desde la interfaz.

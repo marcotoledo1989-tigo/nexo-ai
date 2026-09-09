@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#07111f" />
+<link rel="manifest" href="manifest.webmanifest" />
+<title>NEXO · Agente FO</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--line:#29425e;--text:#eef6ff;--muted:#9fb3c8;--accent:#19c37d;--bubble:#10243a}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(180deg,#07111f,#0a1626 45%,#07111f);color:var(--text);min-height:100vh}
+button,input{font:inherit}.wrap{max-width:1100px;margin:auto;padding:14px}.hero{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.avatar{width:58px;height:58px;border-radius:18px;background:radial-gradient(circle at 36% 32%,#54e5aa,#159e68 55%,#0b5d42);display:grid;place-items:center;font-size:31px;box-shadow:0 10px 30px #0006}
+.hero h1{font-size:22px;margin:0}.hero p{margin:3px 0 0;color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:12px}
+.card{background:#0d1b2ded;border:1px solid var(--line);border-radius:18px;padding:14px}.chat{display:flex;flex-direction:column;min-height:520px}
+.messages{display:flex;flex-direction:column;gap:10px;flex:1;overflow:auto;max-height:560px;padding:2px}.msg{max-width:90%;border-radius:16px;padding:11px 13px;line-height:1.45;font-size:14px;white-space:pre-wrap}
+.bot{align-self:flex-start;background:var(--bubble);border:1px solid #203a55}.user{align-self:flex-end;background:#173c31;border:1px solid #236047}
+.composer{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.composer input{width:100%;border:1px solid var(--line);background:#071523;color:var(--text);border-radius:13px;padding:13px;font-size:16px;min-width:0}
+button{border:0;border-radius:12px;min-height:46px;padding:0 15px;font-weight:750;cursor:pointer}.primary{background:var(--accent);color:#062217}.secondary{background:#17304c;color:var(--text);border:1px solid var(--line)}.danger{background:#49262c;color:#ffd7dc}
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.quick button{min-height:38px;font-size:12px;padding:0 10px}
+.side h2{font-size:15px;margin:0 0 10px}.files{display:grid;gap:8px}.file{background:#0a1726;border:1px solid #203a55;border-radius:12px;padding:10px}.file b{font-size:13px}.file small{display:block;color:var(--muted);margin:2px 0 7px;font-size:11px}.file input{width:100%;color:var(--muted);font-size:12px}
+.status{margin-top:10px;font-size:12px;color:var(--muted);display:flex;gap:7px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:#64748b}.dot.ok{background:var(--accent)}
+.result{margin-top:10px;padding:10px;border-radius:12px;background:#081725;border:1px solid #203a55}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.metric{padding:8px;border-radius:10px;background:#0c1e30;border:1px solid #1f3851}.metric span{font-size:10px;color:var(--muted);display:block}.metric b{font-size:13px;display:block;margin-top:3px;word-break:break-word}.hidden{display:none}.tip{font-size:11px;color:var(--muted);line-height:1.45;margin-top:9px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.chat{min-height:470px}.messages{max-height:520px}.side{order:2}}
+@media(max-width:420px){.wrap{padding:9px}.hero h1{font-size:20px}.msg{max-width:95%}.composer{grid-template-columns:1fr}.composer button{width:100%}.result-grid{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+#nexoMapCard{margin-top:12px;background:#0d1b2ded;border:1px solid var(--line);border-radius:18px;padding:14px;display:none}
+#nexoMapCard.show{display:block}
+#nexoMap{height:420px;border-radius:14px;overflow:hidden;background:#091522;border:1px solid #29425e}
+.map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.map-title{font-weight:800;font-size:15px}.map-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.map-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:9px}
+.legend-line{display:inline-block;width:22px;height:0;border-top:4px solid;margin-right:5px;vertical-align:middle}
+.legend-oc{border-color:#176dff}.legend-client{border-color:#ff344d}
+.legend-dot2{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.dot-client2{background:#ff344d}.dot-mufa2{background:#ffad1f}.dot-oc2{background:#176dff}
+@media(max-width:700px){#nexoMap{height:340px}}
+</style>
+
+
+<style id="nexo-v3-theme">
+:root{
+ --bg:#020b16;--panel:rgba(5,24,43,.88);--panel2:rgba(8,35,61,.92);
+ --line:#0b78b5;--cyan:#12c8ff;--blue:#176dff;--green:#13e49b;
+ --red:#ff344d;--amber:#ffad1f;--text:#edf8ff;--muted:#8eb0c8;
+}
+*{box-sizing:border-box}
+body{
+ margin:0!important;color:var(--text)!important;
+ background:
+ radial-gradient(circle at 78% 8%,rgba(16,105,255,.20),transparent 27%),
+ radial-gradient(circle at 5% 82%,rgba(0,199,255,.12),transparent 25%),
+ linear-gradient(135deg,#010712,#031426 52%,#020a14)!important;
+ font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif!important;
+ min-height:100vh;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;
+ background-image:linear-gradient(rgba(30,170,255,.12) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(30,170,255,.12) 1px,transparent 1px);
+ background-size:44px 44px;
+}
+.wrap,.app,.container{max-width:1600px!important}
+header{
+ border-bottom:1px solid rgba(18,200,255,.35)!important;
+ box-shadow:0 12px 40px rgba(0,0,0,.28);
+}
+.card,.panel,.file,#nexoMapCard,.metric,.result{
+ background:linear-gradient(145deg,rgba(7,31,54,.94),rgba(3,18,33,.92))!important;
+ border:1px solid rgba(18,200,255,.30)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 35px rgba(0,0,0,.18)!important;
+ backdrop-filter:blur(14px);
+}
+button{
+ border:1px solid rgba(18,200,255,.48)!important;
+ background:linear-gradient(180deg,rgba(10,73,115,.9),rgba(4,38,68,.9))!important;
+ color:#eaf9ff!important;transition:.18s ease!important;
+}
+button:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(18,200,255,.22)!important}
+button.primary,#send,.primary{
+ background:linear-gradient(135deg,#05a8ef,#1167ff)!important;
+ box-shadow:0 0 24px rgba(16,133,255,.28)!important;
+}
+input,textarea{
+ background:rgba(1,14,27,.9)!important;border:1px solid rgba(18,200,255,.35)!important;
+ color:#effbff!important;
+}
+#nexoMap{height:min(55vh,560px)!important;min-height:360px}
+#nexoMapCard{border-color:rgba(18,200,255,.55)!important}
+.metric b{color:#fff}
+.metric span,.map-sub,small{color:var(--muted)!important}
+.v3-brand{display:flex;align-items:center;gap:12px}
+.v3-logo{
+ width:44px;height:44px;border:1px solid #12c8ff;border-radius:13px;
+ display:grid;place-items:center;font-weight:900;color:#7fe6ff;
+ background:radial-gradient(circle,#0c6da0,#03101d 70%);
+ box-shadow:0 0 28px rgba(18,200,255,.32)
+}
+.v3-pill{
+ display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;
+ border:1px solid rgba(19,228,155,.38);background:rgba(19,228,155,.08);
+ color:#79ffd1;font-size:11px;font-weight:700
+}
+.v3-agent-strip{
+ display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:8px;margin:10px 0 14px
+}
+.v3-agent-step{
+ padding:8px 10px;border:1px solid rgba(18,200,255,.22);border-radius:10px;
+ background:rgba(4,28,49,.76);font-size:11px;color:#a9c9dc
+}
+.v3-agent-step:before{content:"●";color:#13e49b;margin-right:6px}
+.nexo-div-icon{background:transparent!important;border:none!important}
+.nexo-marker{position:relative;filter:drop-shadow(0 0 7px rgba(0,0,0,.8))}
+.nexo-client{
+ width:34px;height:27px;background:#ff344d;border:3px solid white;border-radius:3px;
+ margin-top:10px
+}
+.nexo-client:before{
+ content:"";position:absolute;left:3px;top:-17px;width:22px;height:22px;
+ background:#ff344d;border-left:3px solid white;border-top:3px solid white;
+ transform:rotate(45deg);border-radius:2px
+}
+.nexo-client:after{
+ content:"";position:absolute;width:8px;height:13px;background:white;left:11px;bottom:0
+}
+.nexo-mufa{
+ width:30px;height:30px;border-radius:50%;background:#ffad1f;border:5px solid #fff;
+ box-shadow:inset 0 0 0 5px #111
+}
+.nexo-oc{
+ width:38px;height:29px;background:#176dff;border:3px solid white;border-radius:3px;
+ margin-top:8px
+}
+.nexo-oc:before{
+ content:"";position:absolute;left:3px;top:-14px;width:7px;height:14px;background:#176dff;
+ border:3px solid white;border-bottom:0;box-shadow:13px 4px 0 -1px #176dff
+}
+.nexo-oc:after{
+ content:"";position:absolute;left:6px;bottom:5px;width:5px;height:6px;background:white;
+ box-shadow:9px 0 white,18px 0 white
+}
+@media(max-width:900px){
+ .v3-agent-strip{grid-template-columns:repeat(3,1fr)}
+ #nexoMap{height:420px!important}
+}
+@media(max-width:620px){
+ .v3-agent-strip{grid-template-columns:repeat(2,1fr)}
+ #nexoMap{height:360px!important}
+}
+</style>
+
+
+<style id="nexo-v31-ui">
+body{overflow-x:hidden}
+.wrap{max-width:1580px!important;padding:10px!important}
+.layout{grid-template-columns:minmax(0,1fr) 320px!important;gap:12px!important}
+.hero{
+  min-height:68px;padding:8px 4px 12px;border-bottom:1px solid rgba(18,200,255,.28);
+  margin-bottom:10px!important
+}
+.hero h1{font-size:28px!important;letter-spacing:.4px}
+.hero p{font-size:12px!important}
+.card{border-radius:14px!important}
+.chat{min-height:320px!important}
+#nexoMapCard{padding:10px!important}
+#nexoMap{height:560px!important}
+.v3-agent-strip{margin-top:0!important}
+.v31-kpis{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 10px
+}
+.v31-kpi{
+ background:linear-gradient(145deg,rgba(7,31,54,.96),rgba(3,18,33,.95));
+ border:1px solid rgba(18,200,255,.28);border-radius:12px;padding:12px;min-width:0
+}
+.v31-kpi span{font-size:11px;color:var(--muted);display:block}
+.v31-kpi b{font-size:23px;display:block;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v31-kpi small{display:block;margin-top:3px}
+.v31-map-toolbar{
+ position:absolute;z-index:850;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;
+ pointer-events:none
+}
+.v31-map-toolbar>*{pointer-events:auto}
+.v31-map-chip{
+ padding:7px 10px;border-radius:10px;background:rgba(3,18,33,.92);border:1px solid rgba(18,200,255,.35);
+ font-size:11px;color:#bfeeff;backdrop-filter:blur(8px)
+}
+.v31-poste-icon{
+ width:10px;height:18px;position:relative;filter:drop-shadow(0 0 4px rgba(255,255,255,.55))
+}
+.v31-poste-icon:before{
+ content:"";position:absolute;left:4px;top:0;width:2px;height:18px;background:#fff;border-radius:2px
+}
+.v31-poste-icon:after{
+ content:"";position:absolute;left:0;top:4px;width:10px;height:2px;background:#fff;border-radius:2px
+}
+.v31-quadrant-box{
+ position:absolute;z-index:845;bottom:10px;left:10px;
+ background:rgba(3,18,33,.88);border:1px solid rgba(18,200,255,.28);border-radius:10px;
+ padding:7px 10px;font-size:10px;color:#9ed7ef;backdrop-filter:blur(8px)
+}
+.v31-side-summary{display:grid;gap:8px}
+.v31-side-card{
+ padding:10px;border-radius:10px;background:rgba(4,27,48,.84);border:1px solid rgba(18,200,255,.20)
+}
+.v31-side-card span{font-size:10px;color:var(--muted);display:block}
+.v31-side-card b{font-size:13px;display:block;margin-top:3px}
+@media(max-width:1100px){
+ .layout{grid-template-columns:1fr!important}
+ .v31-kpis{grid-template-columns:repeat(3,1fr)}
+ #nexoMap{height:500px!important}
+}
+@media(max-width:700px){
+ .v31-kpis{grid-template-columns:repeat(2,1fr)}
+ #nexoMap{height:400px!important}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="avatar">🤖</div>
+    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4 Render · Agente inteligente de ingeniería FO</p></div>
+  </div>
+
+  
+<div class="v31-kpis">
+  <div class="v31-kpi"><span>Factibilidad</span><b id="v31Fact">—</b><small>Evaluación técnica</small></div>
+  <div class="v31-kpi"><span>Cliente → Mufa</span><b id="v31CM">—</b><small>Ruta vial</small></div>
+  <div class="v31-kpi"><span>Postes visibles</span><b id="v31Postes">0</b><small>GeoParquet · cuadrante actual</small></div>
+  <div class="v31-kpi"><span>Mufa → OC</span><b id="v31MO">—</b><small>Ruta vial</small></div>
+  <div class="v31-kpi"><span>Costo SIGO</span><b id="v31Costo">—</b><small>Estimación CLP</small></div>
+</div>
+<div class="layout">
+    <section class="card chat">
+      <div id="messages" class="messages" aria-live="polite">
+        <div class="msg bot">NEXO: Hola. Ahora trabajo con una evaluación principal y solo busco respaldo cuando tú me lo pides.
+
+Ejemplos:
+• “Calcula la factibilidad de este cliente: -33.5743795, -70.5590754”
+• “¿Qué mufa está más cerca de -33.57, -70.55?”
+• “Dame un respaldo”
+• “¿Qué OC corresponde a la mufa 331641?”</div>
+      </div>
+      <div class="quick">
+        <button id="q1" class="secondary">Ejemplo factibilidad</button>
+        <button id="qBackup" class="secondary">Dame un respaldo</button>
+        <button id="q2" class="secondary">Estado de bases</button>
+<button id="qEquip" class="secondary">Equipos de esta OC</button>
+<button id="qMap" class="secondary">Mostrar mapa</button>
+<button id="qSummary" class="secondary">Resumen</button>
+      </div>
+      <form id="chatForm" class="composer">
+        <input id="prompt" type="text" autocomplete="off" placeholder="Escríbele a NEXO…" />
+        <button class="primary" type="submit">Consultar</button>
+      </form>
+    </section>
+
+    <aside class="card side">
+      <h2>Fuentes de datos</h2>
+      <div class="files">
+        <div class="file"><b>Mufas TIGO</b><small id="mufasInfo">Motor servidor · consultando…</small></div>
+        <div class="file"><b>OC</b><small id="ocInfo">Motor servidor · consultando…</small></div>
+        <div class="file"><b>Equipos FEN / MEN</b><small id="fenInfo">Motor servidor · consultando…</small></div>
+        <div class="file"><b>Postes Nacional · GeoParquet</b>
+<small id="postesInfo">No cargado · carga manual por sesión</small>
+<input id="postesUploadFile" type="file" accept=".parquet,.pq,application/octet-stream">
+<button id="postesUploadBtn" type="button" class="secondary" style="width:100%;margin-top:7px">Cargar GeoParquet temporal</button>
+<button id="postesDeleteBtn" type="button" class="secondary" style="width:100%;margin-top:7px">Descargar postes de la sesión</button>
+<small id="postesModeInfo">El archivo se elimina al reiniciar/dormir el servicio.</small>
+</div>
+
+      
+<div class="file" style="margin-top:8px;display:none">
+  <b>Evaluación económica manual</b>
+  <small>Valores CLP configurables. Déjalos en 0 si aún no tienes la tarifa.</small>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+    <label style="font-size:11px;color:var(--muted)">FO $/m<input id="cableCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
+    <label style="font-size:11px;color:var(--muted)">Instalación $/m<input id="installCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
+    <label style="font-size:11px;color:var(--muted)">Apoyo poste $/u<input id="poleCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
+    <label style="font-size:11px;color:var(--muted)">Costo fijo<input id="fixedCost" type="number" min="0" step="1" value="0" style="width:100%;margin-top:3px;background:#071523;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px"></label>
+  </div>
+</div>
+
+<div class="status"><span id="engineDot" class="dot"></span><span id="engineText">Carga Mufas TIGO.</span></div>
+
+      <div id="lastResult" class="result hidden">
+        <div class="result-grid">
+          <div class="metric"><span>Mufa ID</span><b id="mufaId">—</b></div>
+          <div class="metric"><span>Mufa Código</span><b id="mufaCode">—</b></div>
+          <div class="metric"><span>Oficina Central</span><b id="ocName">—</b></div>
+          <div class="metric"><span>Distancia directa</span><b id="distance">—</b></div>
+<div class="metric"><span>Ruta vial OSRM</span><b id="roadDistance">—</b></div>
+<div class="metric"><span>Cable +10%</span><b id="cableDistance">—</b></div>
+          <div class="metric"><span>MEN/FEN</span><b id="men">—</b></div>
+<div class="metric"><span>Postes visibles</span><b id="poleCount">NO EVALUADO</b></div>
+<div class="metric"><span>Fuente postes</span><b id="poleBufferInfo">—</b></div>
+<div class="metric"><span>Modo de carga</span><b id="poleSpacing">—</b></div>
+<div class="metric"><span>Valoración técnica</span><b id="valuation">—</b></div>
+<div class="metric"><span>Costo SIGO estimado</span><b id="economicCost">CALCULANDO</b></div>
+<div class="metric"><span>Base económica</span><b id="economicEval">SIGO · plantilla aérea</b></div>
+          <div id="backupMetric" class="metric hidden"><span>Respaldo solicitado</span><b id="backup">—</b></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px"><button id="forget" class="danger" type="button">Recargar datos del motor</button></div>
+      <p class="tip">NEXO AI v3.4 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
+    </aside>
+  
+</div>
+</div>
+
+
+<div class="v3-agent-strip">
+ <div class="v3-agent-step">Mufas / OC</div>
+ <div class="v3-agent-step">Ruta OSRM</div>
+ <div class="v3-agent-step">Buffer postes</div>
+ <div class="v3-agent-step">FEN / MEN</div>
+ <div class="v3-agent-step">SIGO costos</div>
+ <div class="v3-agent-step">NEXO contextual</div>
+</div>
+<section id="nexoMapCard">
+  <div class="map-head">
+    <div>
+      <div class="map-title">Mapa de la evaluación</div>
+      <div id="mapSubtitle" class="map-sub">Mufa → OC → Cliente</div>
+    </div>
+    <button id="closeMap" class="secondary" type="button">Ocultar mapa</button>
+  </div>
+  
+<div style="position:relative">
+  <div class="v31-map-toolbar">
+    <div class="v31-map-chip">Mapa operativo · Cliente → Mufa → OC</div>
+    <div class="v31-map-chip" id="v31PostStatus">Postes: esperando capa</div>
+  </div>
+  <div id="nexoMap"></div>
+  <div class="v31-quadrant-box" id="v31Bounds">Cuadrante visible</div>
+</div>
+  <div class="map-legend">
+    <span><i class="legend-dot2 dot-oc2"></i>Oficina Central</span>
+    <span><i class="legend-line legend-oc"></i>Mufa → OC</span>
+    <span><i class="legend-dot2 dot-mufa2"></i>Mufa</span>
+    <span><i class="legend-line legend-client"></i>Cliente → Mufa</span>
+    <span><i class="legend-dot2 dot-client2"></i>Cliente</span>
+  </div>
+</section>
+
+<script>
+(()=>{
+const S={mufas:[],ocs:[],fen:[],postes:[],roads:[],last:null,map:null,mapLayers:[],viewportPosteLayer:null,postesParquetReady:false,postesParquetName:'',postesViewportCount:0,serverStatus:null};
+const $=id=>document.getElementById(id);
+
+const A={
+ id:['ID','ID_MUFA','IDMUFA','OBJECTID','FID','id','Id','Id_Mufa'],
+ code:['CODIGO','CÓDIGO','COD_MUFA','CODIGO_MUFA','COD_MUFA_TIGO','CODE','codigo','code','COD','Cod'],
+ name:['NOMBRE','NOMBRE_MUFA','MUFA','NAME','name','Nombre','DESCRIPCION','DESCRIPCIÓN'],
+ oc:['NEMONICO_OC','NEMÓNICO_OC','NEMONICO OC','NEMÓNICO OC','NEMONICO','NEMÓNICO','NEMONICOOC','OC_NEMONICO','OC NEMONICO','OC','CENTRAL','COD_OC','CODIGO_OC','ID_OC','NOMBRE_OC','SIGLA','SITIO','oc'],
+ lat:['LATITUD','LATITUDE','LAT','Y','lat'],
+ lon:['LONGITUD','LONGITUDE','LON','LNG','X','lon','lng']
+};
+
+function val(obj,names){
+ for(const n of names){if(obj&&obj[n]!=null&&String(obj[n]).trim()!=='')return obj[n]}
+ const keys=Object.keys(obj||{});
+ for(const n of names){const k=keys.find(x=>x.toLowerCase()===n.toLowerCase());if(k&&obj[k]!=null&&String(obj[k]).trim()!=='')return obj[k]}
+ return null
+}
+function parseCSV(txt){
+ const lines=txt.replace(/^\uFEFF/,'').split(/\r?\n/).filter(Boolean);if(!lines.length)return[];
+ const sep=(lines[0].match(/;/g)||[]).length>(lines[0].match(/,/g)||[]).length?';':',';
+ const h=lines[0].split(sep).map(x=>x.trim().replace(/^"|"$/g,''));
+ return lines.slice(1).map(line=>{const p=line.split(sep).map(x=>x.trim().replace(/^"|"$/g,''));const o={};h.forEach((k,i)=>o[k]=p[i]??'');return o})
+}
+function featuresFrom(data){
+ if(Array.isArray(data))return data.map(x=>({properties:x,geometry:null}));
+ if(data.type==='FeatureCollection')return data.features||[];
+ if(data.type==='Feature')return[data];
+ return[]
+}
+function bestOCLabel(p){
+ const exactKeys=['Oficinas C','Oficina central','Oficinas Centrales','Oficina Central'];
+ for(const k of exactKeys){
+   if(p && p[k]!=null && String(p[k]).trim()!=='') return String(p[k]).trim();
+ }
+ const entries=Object.entries(p||{}).filter(([k,v])=>v!=null&&String(v).trim()!=='');
+ const hit=entries.find(([k])=>/^oficinas?\s*c/i.test(k));
+ if(hit)return String(hit[1]).trim();
+ const nem=entries.find(([k])=>/nemon/i.test(k));
+ if(nem)return String(nem[1]).trim();
+ return 'SIN OFICINA CENTRAL';
+}
+function norm(f,type='generic'){
+ const p=f.properties||f;
+ let lat=Number(val(p,A.lat)),lon=Number(val(p,A.lon));
+ if(f.geometry&&f.geometry.type==='Point'&&Array.isArray(f.geometry.coordinates)){lon=Number(f.geometry.coordinates[0]);lat=Number(f.geometry.coordinates[1])}
+ const id=String(val(p,A.id)||'').trim(),code=String(val(p,A.code)||'').trim(),name=String(val(p,A.name)||'').trim(),oc=String(val(p,A.oc)||'').trim();
+ const ocLabel=type==='oc'?bestOCLabel(p):'';
+ return {p,lat,lon,id,code,name,oc,ocLabel,label:(type==='oc'?(ocLabel||code||id||name):(code||id||name||'SIN IDENTIFICADOR'))}
+}
+async function loadFile(file,type){
+ const txt=await file.text();let arr;
+ if(file.name.toLowerCase().endsWith('.csv'))arr=parseCSV(txt).map(x=>({properties:x,geometry:null}));
+ else arr=featuresFrom(JSON.parse(txt));
+ return arr.map(x=>norm(x,type))
+}
+function hav(a,b,c,d){
+ const R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad;
+ const q=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(q))
+}
+function validPts(list){return list.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lon))}
+function ranked(list,lat,lon){return validPts(list).map(x=>({...x,d:hav(lat,lon,x.lat,x.lon)})).sort((a,b)=>a.d-b.d)}
+function generic(x){return /^mufa[ _-]*\d+$/i.test(String(x.name||x.label).trim())}
+
+function resolveOC(mufa){
+ const p=mufa.p||{};
+ const directKeys=['Nemonico OC','Nemónico OC','NEMONICO_OC','NEMONICO OC','OC_NEMONICO'];
+ for(const k of directKeys){
+   if(p[k]!=null && String(p[k]).trim()!==''){
+     const value=String(p[k]).trim();
+     return {value,source:'Nemónico OC informado en mufa',obj:null};
+   }
+ }
+ const near=ranked(S.ocs,mufa.lat,mufa.lon)[0];
+ if(near&&near.d<=3000){
+   return {
+     value:bestOCLabel(near.p),
+     source:`OC más cercana (${Math.round(near.d)} m)`,
+     obj:near,
+     siteHolder:(near.p||{})['Site Holde'] ?? null
+   };
+ }
+ return {value:'SIN OFICINA CENTRAL',source:'sin OC dentro de 3 km',obj:null};
+}
+function equipmentFor(ocValue){
+ if(!ocValue||ocValue==='SIN OC'||ocValue==='SIN OFICINA CENTRAL')return[];
+ const target=String(ocValue).trim().toUpperCase();
+ return S.fen.filter(x=>{
+   const p=x.p||{};
+   const real=p['Nemonico OC'] ?? p['Nemónico OC'] ?? p['NEMONICO OC'] ?? p['NEMONICO_OC'];
+   return real!=null && String(real).trim().toUpperCase()===target;
+ });
+}
+function addMsg(text,who='bot'){
+ const d=document.createElement('div');d.className='msg '+(who==='user'?'user':'bot');d.textContent=(who==='bot'?'NEXO: ':'')+text;
+ $('messages').appendChild(d);$('messages').scrollTop=$('messages').scrollHeight
+}
+function extractCoords(text){
+ const nums=(text.match(/-?\d{1,3}(?:[.,]\d+)?/g)||[]).map(x=>Number(x.replace(',','.'))).filter(Number.isFinite);
+ for(let i=0;i<nums.length-1;i++){const a=nums[i],b=nums[i+1];if(a>=-90&&a<=90&&b>=-180&&b<=180&&Math.abs(a)>1&&Math.abs(b)>1)return{lat:a,lon:b}}
+ return null
+}
+
+function toXY(lat,lon,refLat){
+ const R=6371000,rad=Math.PI/180;
+ return {x:lon*rad*R*Math.cos(refLat*rad),y:lat*rad*R};
+}
+function distPointSegmentMeters(pLat,pLon,aLat,aLon,bLat,bLon){
+ const ref=(aLat+bLat+pLat)/3;
+ const p=toXY(pLat,pLon,ref),a=toXY(aLat,aLon,ref),b=toXY(bLat,bLon,ref);
+ const vx=b.x-a.x,vy=b.y-a.y,wx=p.x-a.x,wy=p.y-a.y;
+ const vv=vx*vx+vy*vy;
+ let t=vv?((wx*vx+wy*vy)/vv):0;t=Math.max(0,Math.min(1,t));
+ const dx=p.x-(a.x+t*vx),dy=p.y-(a.y+t*vy);
+ return Math.sqrt(dx*dx+dy*dy);
+}
+function countPolesCorridor(lat,lon,mufa,buffer=25){
+ if(!S.postes.length)return {count:null,buffer};
+ const minLat=Math.min(lat,mufa.lat)-0.001,minLon=Math.min(lon,mufa.lon)-0.001;
+ const maxLat=Math.max(lat,mufa.lat)+0.001,maxLon=Math.max(lon,mufa.lon)+0.001;
+ let count=0;
+ for(const p of S.postes){
+   if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon))continue;
+   if(p.lat<minLat||p.lat>maxLat||p.lon<minLon||p.lon>maxLon)continue;
+   if(distPointSegmentMeters(p.lat,p.lon,lat,lon,mufa.lat,mufa.lon)<=buffer)count++;
+ }
+ return {count,buffer};
+}
+function valuationFor(m,ocRes,eq,poles){
+ let score=100;
+ const reasons=[];
+ if(m.d<=300)reasons.push('mufa cercana');
+ else if(m.d<=600){score-=10;reasons.push('distancia media a mufa')}
+ else if(m.d<=1000){score-=25;reasons.push('distancia alta a mufa')}
+ else {score-=40;reasons.push('mufa a más de 1 km')}
+ if(ocRes.value==='SIN OFICINA CENTRAL'){score-=20;reasons.push('sin Oficina Central')}
+ else reasons.push('Oficina Central identificada');
+ if(S.fen.length){
+   if(eq.length)reasons.push(`${eq.length} equipo(s) FEN/MEN en la OC`);
+   else {score-=20;reasons.push('sin equipo FEN/MEN asociado')}
+ }
+ score=Math.max(0,Math.min(100,score));
+ const label=score>=80?'ALTA':score>=60?'MEDIA':'BAJA';
+ return {score,label,reasons};
+}
+
+
+
+const CUB_BASE_SIGO = [
+ {cod:'D022-CUFH',desc:'Diseño de Red para Proyectos Zona Cobertura Garantizada (F.O.)',grupo:'ING',und:'CU',qty:1,precio:290719.74},
+ {cod:'H592',desc:'CABLE 8FO/KP',grupo:'MAT',und:'MT',qty:100,precio:302.40},
+ {cod:'J760-CUFH',desc:'Instalar cable de fibra óptica aéreo con preformados',grupo:'MO',und:'MT',qty:100,precio:531.61},
+ {cod:'J765-CUFH',desc:'Manipular cable o elemento de F.O. (emp., term., asoc.)',grupo:'MO',und:'CU',qty:1,precio:10853.62},
+ {cod:'J789-CUFH',desc:'Empalmar F.O. todo tipo capacidades',grupo:'MO',und:'CU',qty:1,precio:886.01},
+ {cod:'J770-CUFH',desc:'Preparar tubo/s cable de F.O. (en punta o con sangrado)',grupo:'MO',und:'CU',qty:2,precio:1772.02},
+ {cod:'J768-CUFH',desc:'Preparar extremos cable de F.O. (en punta o con sangrado)',grupo:'MO',und:'CU',qty:2,precio:17720.19},
+ {cod:'J158-CUFH',desc:'Instalar amarras plásticas de todo tipo',grupo:'MO',und:'CU',qty:2,precio:449.45},
+ {cod:'J402-CUFH',desc:'Rotular elemento de empalme, terminación o asociado',grupo:'MO',und:'CU',qty:1,precio:1438.24},
+ {cod:'P004-CUFH',desc:'Permisos Municipales en áreas remotas de Agencias',grupo:'MO',und:'CU',qty:1,precio:77369.28},
+ {cod:'R459-CUFH',desc:'Instalación de pernos de seguridad en tapa tipo calzada',grupo:'MO',und:'CU',qty:3,precio:46979.70},
+ {cod:'R454-CUFH',desc:'Lubricación sistema contratapa a tapa cámara',grupo:'MO',und:'CU',qty:3,precio:16818.73},
+ {cod:'R209-CUFH',desc:'Soldado o desoldado de tapas de Cámaras',grupo:'MO',und:'CU',qty:3,precio:10335.53},
+ {cod:'R257-CUFH',desc:'Apertura, ventilación y cierre de cámaras',grupo:'MO',und:'CU',qty:3,precio:2818.78},
+ {cod:'J659-CUFH',desc:'Medida alta de abonado en F.O. Monomodo',grupo:'MO',und:'CF',qty:1,precio:8860.10},
+ {cod:'H574',desc:'PREFORMADO DE PASO AZUL',grupo:'MAT',und:'CU',qty:1,precio:932.80},
+ {cod:'H566',desc:'PREFORMADO RETENCIÓN AZUL',grupo:'MAT',und:'CU',qty:2,precio:1857.60},
+ {cod:'H486',desc:'KIT ACCESO NUEVO CABLE TODAS MUFAS FOSC',grupo:'MAT',und:'CU',qty:1,precio:6016.00},
+ {cod:'H372',desc:'MANGUITOS PROTECTORES EMPALMES FUSIÓN',grupo:'MAT',und:'CU',qty:1,precio:27.20},
+ {cod:'H100',desc:'TARJETA IDENTIFICACIÓN F.O.',grupo:'MAT',und:'CU',qty:1,precio:733.00},
+ {cod:'C999',desc:'AMARRA PLÁSTICA 30 CMS',grupo:'MAT',und:'CU',qty:2,precio:27.00},
+ {cod:'R428',desc:'PERNO DE SEGURIDAD TECNEG TIPO CTC',grupo:'MAT',und:'CU',qty:3,precio:50629.00},
+ {cod:'R285',desc:'SOLDADO TAPAS DE CÁMARA',grupo:'MAT',und:'CU',qty:3,precio:955.50}
+];
+const CUB_FIXED_SIGO = new Set(['D022-CUFH','R459-CUFH','R454-CUFH','R209-CUFH','R257-CUFH','J659-CUFH','R428','R285','J770-CUFH','J768-CUFH','J402-CUFH','P004-CUFH','H486']);
+
+function calcularCubicacionSIGO(cableKm){
+ const metros=cableKm*1000,factor=metros/100;
+ let ing=0,mo=0,mat=0;
+ const items=CUB_BASE_SIGO.map(it=>{
+   const fija=CUB_FIXED_SIGO.has(it.cod);
+   const cant=fija?it.qty:it.qty*factor;
+   const sub=cant*it.precio;
+   if(it.grupo==='ING')ing+=sub; else if(it.grupo==='MO')mo+=sub; else mat+=sub;
+   return {...it,cant,sub,fija};
+ });
+ return {factor,metros,items,totals:{ing,mo,mat,gen:ing+mo+mat}};
+}
+
+async function fetchOSRMRoute(a,b){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),12000);
+ try{
+   const url=`https://router.project-osrm.org/route/v1/driving/${a[1]},${a[0]};${b[1]},${b[0]}?overview=full&geometries=geojson`;
+   const res=await fetch(url,{signal:controller.signal});
+   if(!res.ok)throw new Error(`OSRM ${res.status}`);
+   const data=await res.json(),r=data.routes&&data.routes[0];
+   if(!r||!r.geometry||!r.geometry.coordinates||!Number.isFinite(r.distance))throw new Error('Sin ruta OSRM');
+   return {coords:r.geometry.coordinates.map(c=>[c[1],c[0]]),distanceM:r.distance,source:'OSRM'};
+ } finally {clearTimeout(timer)}
+}
+
+async function automaticTwoWayRoute(lat,lon,mufa){
+ const a=[lat,lon],b=[mufa.lat,mufa.lon];
+ const settled=await Promise.allSettled([fetchOSRMRoute(a,b),fetchOSRMRoute(b,a)]);
+ const opts=[];
+ if(settled[0].status==='fulfilled')opts.push(settled[0].value);
+ if(settled[1].status==='fulfilled'){
+   const r=settled[1].value;
+   opts.push({...r,coords:[...r.coords].reverse()});
+ }
+ if(!opts.length)throw new Error('No fue posible obtener una ruta vial OSRM');
+ opts.sort((x,y)=>x.distanceM-y.distanceM);
+ return {...opts[0],source:'OSRM · comparación ida/vuelta'};
+}
+
+
+function haversineCoordsMeters(a,b){
+ const lon1=Number(a[0]),lat1=Number(a[1]),lon2=Number(b[0]),lat2=Number(b[1]);
+ const R=6371000,rad=Math.PI/180;
+ const dLat=(lat2-lat1)*rad,dLon=(lon2-lon1)*rad;
+ const s=Math.sin(dLat/2)**2+
+   Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)**2;
+ return 2*R*Math.atan2(Math.sqrt(s),Math.sqrt(1-s));
+}
+
+function countPolesAlongRoute(routeCoords,buffer=25){
+ if(!S.postes.length)return {count:null,buffer,matched:[],avgSpacing:null};
+ if(!routeCoords || routeCoords.length<2)return {count:0,buffer,matched:[],avgSpacing:null};
+
+ // Equivalente geométrico a:
+ // 1) Buffer de la línea central de la ruta, X metros a ambos lados.
+ // 2) Intersección espacial con la capa puntual de postes.
+ // Para puntos, intersectar el buffer equivale a distancia punto→línea <= buffer.
+
+ const lats=routeCoords.map(c=>c[0]), lons=routeCoords.map(c=>c[1]);
+ const midLat=(Math.min(...lats)+Math.max(...lats))/2;
+ const dLat=buffer/110540;
+ const dLon=buffer/(111320*Math.max(0.15,Math.cos(midLat*Math.PI/180)));
+ const minLat=Math.min(...lats)-dLat, maxLat=Math.max(...lats)+dLat;
+ const minLon=Math.min(...lons)-dLon, maxLon=Math.max(...lons)+dLon;
+
+ const matched=[];
+ for(let pi=0;pi<S.postes.length;pi++){
+   const p=S.postes[pi];
+   if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon))continue;
+
+   // Prefiltro por caja envolvente expandida del buffer.
+   if(p.lat<minLat||p.lat>maxLat||p.lon<minLon||p.lon>maxLon)continue;
+
+   let best=Infinity;
+   for(let i=1;i<routeCoords.length;i++){
+     const a=routeCoords[i-1],b=routeCoords[i];
+     const d=distPointSegmentMeters(p.lat,p.lon,a[0],a[1],b[0],b[1]);
+     if(d<best)best=d;
+     if(best<=buffer)break;
+   }
+   if(best<=buffer)matched.push({index:pi,post:p,distanceM:best});
+ }
+
+ // Un poste se cuenta una sola vez aunque toque más de un segmento de la ruta.
+ const routeLen=routeCoords.slice(1).reduce((sum,p,i)=>sum+haversineCoordsMeters(
+   [routeCoords[i][1],routeCoords[i][0]],[p[1],p[0]]
+ ),0);
+ const avgSpacing=matched.length>1 ? routeLen/(matched.length-1) : null;
+ return {count:matched.length,buffer,matched,avgSpacing,routeLen};
+}
+
+function economicEvaluation(routeMeters,poles){
+ const cableKm=(routeMeters*1.10)/1000;
+ const cub=calcularCubicacionSIGO(cableKm);
+ return {configured:true,total:cub.totals.gen,label:'SIGO · AÉREA',cub,cableKm};
+}
+
+function clp(n){return '$'+Math.round(n).toLocaleString('es-CL');}
+
+function showResult(m,ocRes,eq,poles,valuation,econ){
+ $('mufaId').textContent=m.id||'SIN ID';
+ $('mufaCode').textContent=m.code||'SIN CÓDIGO';
+ $('ocName').textContent=ocRes.value;
+ $('distance').textContent=Math.round(m.d)+' m';
+ $('men').textContent=S.fen.length?(eq.length?'CON RED MEN/FEN':'SIN RED MEN/FEN'):'NO EVALUADA';
+ $('poleCount').textContent=S.postesParquetReady?(S.postesViewportCount||0).toLocaleString('es-CL'):'CARGA .PARQUET';
+ $('poleBufferInfo').textContent=S.postesParquetReady?'GeoParquet nacional':'—';
+ $('poleSpacing').textContent=S.postesParquetReady?'Stream por cuadrante':'—';
+ $('valuation').textContent=`${valuation.label} · ${valuation.score}%`;
+ $('economicCost').textContent=econ.configured?clp(econ.total):'SIN TARIFAS';
+ $('economicEval').textContent=econ.label;
+ $('backupMetric').classList.add('hidden');
+ $('lastResult').classList.remove('hidden');
+}
+async function analyze(lat,lon,mode='factibilidad'){
+ if(!S.mufas.length){addMsg('Primero carga la base Mufas TIGO.');return}
+ const r=ranked(S.mufas,lat,lon),preferred=r.filter(x=>!generic(x)),m=preferred[0]||r[0];
+ const ocRes=resolveOC(m),eq=equipmentFor(ocRes.value);
+ addMsg('Calculando ruta vial bidireccional con OSRM…');
+
+ let route=null,routeError='';
+ try{route=await automaticTwoWayRoute(lat,lon,m)}
+ catch(e){routeError=e.message}
+
+ const routeMeters=route?route.distanceM:m.d*1.18;
+ const cableMeters=routeMeters*1.10;
+ const poles={count:null,buffer:null,matched:[],avgSpacing:null};
+ const valuation=valuationFor(m,ocRes,eq,poles);
+ const econ=economicEvaluation(routeMeters,poles);
+ const ocRoute=await calculateOCMufaRoute(ocRes,m);
+
+ S.last={lat,lon,mufa:m,ocRes,eq,ranked:r,preferred,poles,valuation,econ,route,routeMeters,cableMeters,ocRoute};
+ showResult(m,ocRes,eq,poles,valuation,econ);updateV31KPIs();
+ $('roadDistance').textContent=route?`${Math.round(routeMeters)} m`:`EST. ${Math.round(routeMeters)} m`;
+ $('cableDistance').textContent=`${Math.round(cableMeters)} m`;
+
+ if(mode==='mufa'){
+   addMsg(`La mufa más cercana está a ${Math.round(m.d)} m.
+ID: ${m.id||'SIN ID'}
+Código: ${m.code||'SIN CÓDIGO'}
+Nombre: ${m.name||'—'}
+Oficina Central: ${ocRes.value}
+Ruta vial: ${route?Math.round(routeMeters)+' m':'no disponible'}
+Cable +10%: ${Math.round(cableMeters)} m.`);
+   return;
+ }
+
+ const score=valuation.score;
+ const decision=score>=80?'FACTIBLE':score>=60?'REVISAR':'NO RECOMENDADO';
+ const C=econ.cub;
+
+ addMsg(`Resultado: ${decision} (${score}%)
+
+Mufa principal
+• ID: ${m.id||'SIN ID'}
+• Código: ${m.code||'SIN CÓDIGO'}
+• Distancia directa: ${Math.round(m.d)} m
+
+Ruta FO
+• Cliente → Mufa: ${route?`${Math.round(routeMeters)} m · OSRM`:`estimada ${Math.round(routeMeters)} m`}
+• Mufa → OC: ${ocRoute?`${Math.round(ocRoute.distanceM)} m · OSRM`:'ruta vial no disponible'}
+• Cable considerado Cliente → Mufa +10%: ${Math.round(cableMeters)} m
+• Método: ${route?route.source:routeError||'estimación tablet'}
+
+Oficina Central
+• ${ocRes.value}
+• Asociación: ${ocRes.source}
+
+MEN/FEN
+• ${S.fen.length?(eq.length?`CON RED · ${eq.length} equipo(s)`:'SIN RED MEN/FEN'):'NO EVALUADA'}
+
+Postación
+• Fuente: ${S.postesParquetReady?'GeoParquet nacional cargado':'NO CARGADA'}
+• Visualización: consulta dinámica por cuadrante visible del mapa
+• No interviene en la factibilidad mediante buffer
+
+Evaluación económica SIGO
+• Ingeniería: ${clp(C.totals.ing)}
+• Mano de Obra: ${clp(C.totals.mo)}
+• Materiales: ${clp(C.totals.mat)}
+• TOTAL GENERAL: ${clp(C.totals.gen)}
+• Base: plantilla aérea SIGO · cable +10%
+
+No calculé respaldo. Si lo necesitas, dime: “Dame un respaldo”.`);
+}
+function giveBackup(){
+ if(!S.last){addMsg('Primero calcula una factibilidad para saber desde qué cliente debo buscar el respaldo.');return}
+ const {mufa,preferred,ranked:r}=S.last;
+ const backup=(preferred.find(x=>x.label!==mufa.label)||r.find(x=>x.label!==mufa.label)||null);
+ if(!backup){addMsg('No encontré una mufa alternativa distinta para respaldo.');return}
+ const oc=resolveOC(backup),eq=equipmentFor(oc.value);
+ $('backup').textContent=backup.code||backup.id||backup.name||backup.label;$('backupMetric').classList.remove('hidden');
+ addMsg(`Respaldo solicitado:
+• ID: ${backup.id||'SIN ID'}
+• Código: ${backup.code||'SIN CÓDIGO'}
+• Distancia directa: ${Math.round(backup.d)} m
+• Oficina Central: ${oc.value}
+• Asociación OC: ${oc.source}
+• MEN/FEN: ${S.fen.length?(eq.length?`CON RED · ${eq.length} equipo(s)`:'SIN RED MEN/FEN'):'NO EVALUADA'}`)
+}
+function queryMufaByText(text){
+ const m=text.match(/mufa\s+([A-Za-z0-9._-]+)/i);if(!m)return null;const key=m[1].toLowerCase();
+ return S.mufas.find(x=>[x.id,x.code,x.name,x.label].some(v=>v&&String(v).toLowerCase()===key))||null
+}
+
+function normalizeIntentText(s){
+ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+
+function equipmentDetails(eq){
+ if(!eq?.length)return 'No encontré equipos FEN/MEN asociados a esa Oficina Central.';
+ const rows=eq.map((x,i)=>{
+   const p=x.p||{};
+   const tipo=p['tipo']??'—';
+   const nodo=p['nombre_nodo']??p['title_nodo']??'—';
+   const idNodo=p['id_nodo']??'—';
+   const empl=p['nombre_emplazamiento']??'—';
+   const idEmpl=p['id_emplazamiento']??'—';
+   return `${i+1}. ${tipo} · ${nodo}\n   Nodo: ${idNodo} · Emplazamiento: ${empl} (${idEmpl})`;
+ });
+ return `${eq.length} equipo(s) FEN/MEN:\n`+rows.join('\n');
+}
+
+function equipmentForNamedOC(name){
+ const target=String(name||'').trim().toUpperCase();
+ if(!target)return[];
+ return S.fen.filter(x=>{
+   const p=x.p||{};
+   const v=p['Nemonico OC']??p['Nemónico OC']??p['NEMONICO OC']??p['NEMONICO_OC'];
+   return v!=null && String(v).trim().toUpperCase()===target;
+ });
+}
+
+function routeSummaryText(){
+ if(!S.last)return 'Primero calcula una factibilidad.';
+ const L=S.last;
+ return `Resumen de la evaluación actual:
+• Mufa: ${L.mufa?.code||L.mufa?.id||'—'} · ID ${L.mufa?.id||'—'}
+• Oficina Central: ${L.ocRes?.value||'—'}
+• Equipos FEN/MEN: ${L.eq?.length??0}
+• Distancia directa Cliente→Mufa: ${Math.round(L.mufa?.d||0)} m
+• Ruta Mufa→Cliente: ${L.route?Math.round(L.routeMeters)+' m':'sin ruta vial'}
+• Ruta OC→Mufa: ${L.ocRoute?Math.round(L.ocRoute.distanceM)+' m':'sin ruta vial'}
+• Cable +10%: ${Math.round(L.cableMeters||0)} m
+• Postes en buffer: ${L.poles?.count==null?'no evaluado':L.poles.count}
+• Valoración técnica: ${L.valuation?.label||'—'} · ${L.valuation?.score??'—'}%
+• Costo SIGO: ${L.econ?.configured?clp(L.econ.total):'no evaluado'}`;
+}
+
+async function calculateOCMufaRoute(ocRes,mufa){
+ const o=ocRes?.obj;
+ if(!o||!Number.isFinite(o.lat)||!Number.isFinite(o.lon))return null;
+ try{return await automaticTwoWayRoute(o.lat,o.lon,mufa)}
+ catch(e){return null}
+}
+
+function clearNexoMapLayers(){
+ if(!S.map)return;
+ S.mapLayers.forEach(l=>{try{S.map.removeLayer(l)}catch(e){}});
+ S.mapLayers=[];
+}
+
+function ensureNexoMap(){
+ if(typeof L==='undefined')throw new Error('Leaflet no está disponible. Revisa la conexión a Internet.');
+ if(!S.map){
+   S.map=L.map('nexoMap',{zoomControl:true});
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+     maxZoom:19,
+     attribution:'© OpenStreetMap'
+   }).addTo(S.map);
+ }
+ return S.map;
+}
+
+
+function nexoDivIcon(kind){
+ const cls=kind==='client'?'nexo-client':kind==='mufa'?'nexo-mufa':'nexo-oc';
+ return L.divIcon({className:'nexo-div-icon',html:`<div class="nexo-marker ${cls}"></div>`,
+   iconSize:[42,42],iconAnchor:[21,28],popupAnchor:[0,-28]});
+}
+
+
+function nexoPosteIcon(){
+ return L.divIcon({
+   className:'nexo-div-icon',
+   html:'<div class="v31-poste-icon"></div>',
+   iconSize:[12,20],iconAnchor:[6,18],popupAnchor:[0,-16]
+ });
+}
+
+function updateV31KPIs(){
+ const Ls=S.last;
+ if(!Ls)return;
+ const fact=$('v31Fact'),cm=$('v31CM'),mo=$('v31MO'),cost=$('v31Costo');
+ if(fact)fact.textContent=`${Ls.valuation?.score??'—'}%`;
+ if(cm)cm.textContent=Ls.route?`${Math.round(Ls.routeMeters)} m`:'—';
+ if(mo)mo.textContent=Ls.ocRoute?`${Math.round(Ls.ocRoute.distanceM)} m`:'—';
+ if(cost)cost.textContent=Ls.econ?.configured?clp(Ls.econ.total):'—';
+}
+
+function clearViewportPostes(){
+ if(!S.map)return;
+ if(S.viewportPosteLayer){
+   try{S.map.removeLayer(S.viewportPosteLayer)}catch(e){}
+   S.viewportPosteLayer=null;
+ }
+}
+
+async function renderViewportPostes(){
+ if(!S.map)return;
+ const bounds=S.map.getBounds();
+ const sw=bounds.getSouthWest(),ne=bounds.getNorthEast();
+ const st=$('v31PostStatus');
+ if(st)st.textContent='Postes: consultando motor…';
+ try{
+   const url=`/api/postes?min_lon=${encodeURIComponent(sw.lng)}&min_lat=${encodeURIComponent(sw.lat)}&max_lon=${encodeURIComponent(ne.lng)}&max_lat=${encodeURIComponent(ne.lat)}&limit=1200`;
+   const res=await fetch(url);
+   if(!res.ok)throw new Error(await res.text());
+   const result=await res.json();
+   clearViewportPostes();
+   const group=L.layerGroup();
+   for(const p of result.rows||[]){
+     if(!Number.isFinite(Number(p.latitud))||!Number.isFinite(Number(p.longitud)))continue;
+     const detalle=[
+       `Poste: ${p.poste_id||'—'}`,
+       p.empresa?`Empresa: ${p.empresa}`:'',
+       p.material?`Material: ${p.material}`:'',
+       p.altura!=null?`Altura: ${p.altura}`:'',
+       p.tipo_propiedad?`Propiedad: ${p.tipo_propiedad}`:'',
+       p.apoyo_comunicaciones!=null?`Apoyo comunicaciones: ${p.apoyo_comunicaciones}`:''
+     ].filter(Boolean).join('<br>');
+     L.marker([Number(p.latitud),Number(p.longitud)],{icon:nexoPosteIcon(),interactive:true})
+       .bindPopup(detalle).addTo(group);
+   }
+   group.addTo(S.map);
+   S.viewportPosteLayer=group;
+   S.postesViewportCount=Number(result.total)||0;
+   const cnt=$('v31Postes');if(cnt)cnt.textContent=S.postesViewportCount.toLocaleString('es-CL');
+   if(st)st.textContent=result.total>result.rows.length
+      ?`Postes: ${Number(result.total).toLocaleString('es-CL')} · mostrando ${result.rows.length}`
+      :`Postes: ${Number(result.total).toLocaleString('es-CL')} en cuadrante`;
+   const b=$('v31Bounds');
+   if(b)b.textContent=`Cuadrante: ${sw.lat.toFixed(4)}, ${sw.lng.toFixed(4)} ↔ ${ne.lat.toFixed(4)}, ${ne.lng.toFixed(4)}`;
+ }catch(e){
+   console.error(e);
+   if(st)st.textContent='Postes: motor no disponible';
+ }
+}
+
+
+async function refreshServerStatus(){
+ try{
+   const res=await fetch('/api/status');
+   if(!res.ok)throw new Error('Servidor no disponible');
+   const s=await res.json();S.serverStatus=s;
+   S.postesParquetReady=!!s.postes?.ready;
+   S.postesParquetName=s.postes?.name||'';
+   const pi=$('postesInfo'),pm=$('postesModeInfo');
+   if(pi)pi.textContent=s.postes?.ready
+     ?`GeoParquet listo · ${Number(s.postes.count||0).toLocaleString('es-CL')} postes`
+     :'GeoParquet no instalado en /data';
+   if(pm)pm.textContent=s.postes?.ready?'Modo: DuckDB temporal · consulta BBOX':'Carga manualmente el .parquet para esta sesión';
+   const setInfo=(id,obj,label)=>{
+      const el=$(id);if(!el)return;
+      el.textContent=obj?.ready?`${Number(obj.count||0).toLocaleString('es-CL')} registros · ${obj.name}`:`${label}: no cargado`;
+   };
+   setInfo('mufasInfo',s.mufas,'Mufas');
+   setInfo('ocInfo',s.oc,'OC');
+   setInfo('fenInfo',s.fen,'FEN/MEN');
+   updateEngine();
+   if(S.map&&S.postesParquetReady)renderViewportPostes();
+ }catch(e){
+   const pi=$('postesInfo');if(pi)pi.textContent='Motor servidor no disponible';
+ }
+}
+
+function bindViewportPostes(){
+ if(!S.map || S.map._nexoViewportPostesBound)return;
+ S.map._nexoViewportPostesBound=true;
+ let timer=null;
+ const refresh=()=>{
+   clearTimeout(timer);
+   timer=setTimeout(()=>renderViewportPostes(),180);
+ };
+ S.map.on('moveend zoomend',refresh);
+}
+
+function renderCurrentMap(){
+ if(!S.last){addMsg('Primero calcula una factibilidad para poder dibujar las rutas.');return}
+ try{
+   const map=ensureNexoMap();clearNexoMapLayers();bindViewportPostes();
+   const Ls=S.last;
+   const client=[Ls.lat,Ls.lon];
+   const mufa=[Ls.mufa.lat,Ls.mufa.lon];
+   const ocObj=Ls.ocRes?.obj;
+   const bounds=[];
+
+   const mkClient=L.marker(client,{icon:nexoDivIcon('client')}).addTo(map).bindPopup('🏠 Cliente');
+   const mkMufa=L.marker(mufa,{icon:nexoDivIcon('mufa')}).addTo(map).bindPopup(`● Mufa: ${Ls.mufa.code||Ls.mufa.id||'—'}`);
+   S.mapLayers.push(mkClient,mkMufa);bounds.push(client,mufa);
+
+   if(ocObj&&Number.isFinite(ocObj.lat)&&Number.isFinite(ocObj.lon)){
+     const oc=[ocObj.lat,ocObj.lon];
+     const mkOC=L.marker(oc,{icon:nexoDivIcon('oc')}).addTo(map).bindPopup(`🏭 OC: ${Ls.ocRes.value}`);
+     S.mapLayers.push(mkOC);bounds.push(oc);
+   }
+
+   if(Ls.route?.coords?.length){
+     const p=L.polyline(Ls.route.coords,{weight:6,opacity:.95,color:'#ff344d'}).addTo(map).bindPopup(`Cable Cliente ↔ Mufa · ${Math.round(Ls.routeMeters)} m`);
+     S.mapLayers.push(p);Ls.route.coords.forEach(c=>bounds.push(c));
+   }else{
+     const p=L.polyline([mufa,client],{weight:5,dashArray:'8 8',opacity:.9,color:'#ff344d'}).addTo(map);
+     S.mapLayers.push(p);
+   }
+
+   if(Ls.ocRoute?.coords?.length){
+     const p=L.polyline(Ls.ocRoute.coords,{weight:6,opacity:.95,color:'#176dff'}).addTo(map).bindPopup(`Cable Mufa ↔ OC · ${Math.round(Ls.ocRoute.distanceM)} m`);
+     S.mapLayers.push(p);Ls.ocRoute.coords.forEach(c=>bounds.push(c));
+   }else if(ocObj&&Number.isFinite(ocObj.lat)&&Number.isFinite(ocObj.lon)){
+     const p=L.polyline([[ocObj.lat,ocObj.lon],mufa],{weight:5,dashArray:'5 8',opacity:.85,color:'#176dff'}).addTo(map);
+     S.mapLayers.push(p);
+   }
+
+   $('nexoMapCard').classList.add('show');
+   $('mapSubtitle').textContent=`${Ls.ocRes?.value||'OC'} → ${Ls.mufa.code||Ls.mufa.id||'Mufa'} → Cliente`;
+   setTimeout(()=>{map.invalidateSize();if(bounds.length)map.fitBounds(bounds,{padding:[28,28]});renderViewportPostes();updateV31KPIs()},120);
+ }catch(e){addMsg('No pude mostrar el mapa: '+e.message)}
+}
+
+function explainDecision(){
+ if(!S.last)return 'Primero calcula una factibilidad.';
+ const v=S.last.valuation;
+ return `La valoración técnica es ${v.label} (${v.score}%). Factores considerados:\n• ${v.reasons.join('\n• ')}`;
+}
+
+function costDetails(){
+ if(!S.last?.econ?.cub)return 'Primero calcula una factibilidad.';
+ const C=S.last.econ.cub;
+ const top=C.items.slice().sort((a,b)=>b.sub-a.sub).slice(0,8);
+ return `Evaluación económica SIGO:
+• Ingeniería: ${clp(C.totals.ing)}
+• Mano de Obra: ${clp(C.totals.mo)}
+• Materiales: ${clp(C.totals.mat)}
+• TOTAL: ${clp(C.totals.gen)}
+
+Principales ítems:
+${top.map(x=>`• ${x.cod} · ${x.desc}: ${clp(x.sub)}`).join('\n')}`;
+}
+
+
+function handle(text){
+ const t=text.trim();if(!t)return;
+ addMsg(t,'user');
+ const low=normalizeIntentText(t);
+
+ if((low.includes('respaldo')||low.includes('alternativa'))&&!extractCoords(t)){giveBackup();return}
+
+ if((low.includes('equipo')||low.includes('fen')||low.includes('men'))){
+   if(S.last && (low.includes('esta oc')||low.includes('la oc')||low.includes('oficina central')||low==='equipos')){
+     addMsg(`Oficina Central ${S.last.ocRes.value}\n${equipmentDetails(S.last.eq)}`);return;
+   }
+   const allOCs=[...new Set(S.fen.map(x=>String((x.p||{})['Nemonico OC']??'').trim()).filter(Boolean))];
+   const found=allOCs.find(o=>low.includes(normalizeIntentText(o)));
+   if(found){addMsg(`Oficina Central ${found}\n${equipmentDetails(equipmentForNamedOC(found))}`);return}
+   if(S.last){addMsg(`Oficina Central ${S.last.ocRes.value}\n${equipmentDetails(S.last.eq)}`);return}
+   addMsg('Indícame el Nemónico de la OC o calcula primero una factibilidad.');return;
+ }
+
+ if(low.includes('mapa')||low.includes('muestra la ruta')||low.includes('mostrar ruta')||low.includes('ver ruta')){
+   renderCurrentMap();addMsg('Mostré el mapa de Mufa → OC → Cliente debajo del chat.');return;
+ }
+
+ if((low.includes('cuanto')||low.includes('cuánto'))&&low.includes('poste') || low.includes('postes encontr')){
+   if(!S.postesParquetReady){addMsg('Carga primero Postes_Electricos_Nacional_GeoLibre.parquet.');return}
+   addMsg(`En el cuadrante visible del mapa hay ${S.postesViewportCount.toLocaleString('es-CL')} postes según el GeoParquet nacional.`);return;
+ }
+
+ if(low.includes('costo')||low.includes('econom')||low.includes('cubicacion')||low.includes('cubicación')){
+   addMsg(costDetails());return;
+ }
+
+ if(low.includes('por que')||low.includes('porque')||low.includes('explica')||low.includes('criterio')){
+   addMsg(explainDecision());return;
+ }
+
+ if(low.includes('resumen')||low.includes('resume la evaluacion')||low.includes('resume esta evaluacion')){
+   addMsg(routeSummaryText());return;
+ }
+
+ if((low.includes('ruta')&&low.includes('oc')) || (low.includes('oc')&&low.includes('mufa')&&low.includes('distancia'))){
+   if(!S.last){addMsg('Primero calcula una factibilidad.');return}
+   addMsg(S.last.ocRoute?`La ruta vial entre ${S.last.ocRes.value} y la mufa ${S.last.mufa.code||S.last.mufa.id} es de ${Math.round(S.last.ocRoute.distanceM)} m.`:'No pude calcular una ruta vial Mufa → OC.');return;
+ }
+
+ if(low.includes('que mufa')||low.includes('qué mufa')||low.includes('mufa seleccion')||low.includes('mufa eleg')){
+   if(S.last){addMsg(`Seleccioné la mufa ${S.last.mufa.code||'SIN CÓDIGO'} · ID ${S.last.mufa.id||'SIN ID'}, a ${Math.round(S.last.mufa.d)} m en línea recta del cliente.`);return}
+ }
+
+ if(low.includes('estado')&&(low.includes('base')||low.includes('datos'))){
+   addMsg(`Estado de fuentes:
+• Mufas: ${S.mufas.length.toLocaleString('es-CL')}
+• OC: ${S.ocs.length.toLocaleString('es-CL')}
+• FEN/MEN: ${S.fen.length.toLocaleString('es-CL')}
+• Postes GeoParquet temporal: ${S.postesParquetReady?'SERVIDOR LISTO':'NO DISPONIBLE'}
+• Red vial local: ${S.roads.length.toLocaleString('es-CL')} tramos
+• Router en línea: OSRM`);return;
+ }
+
+ if(low.includes('que oc')||low.includes('qué oc')||low.includes('oc corresponde')){
+   const m=queryMufaByText(t);
+   if(!m){
+     if(S.last){addMsg(`La mufa actual ${S.last.mufa.code||S.last.mufa.id} está asociada a la Oficina Central ${S.last.ocRes.value}.`);return}
+     addMsg('No pude identificar esa mufa. Consúltala por ID o Código.');return;
+   }
+   const oc=resolveOC(m);
+   addMsg(`Para la mufa ${m.code||m.id||m.name||m.label}:
+• ID: ${m.id||'SIN ID'}
+• Código: ${m.code||'SIN CÓDIGO'}
+• Oficina Central: ${oc.value}
+• Método: ${oc.source}`);return;
+ }
+
+ const c=extractCoords(t);
+ if(c){
+   analyze(c.lat,c.lon,(low.includes('que mufa')||low.includes('mufa mas cerca'))?'mufa':'factibilidad').catch(e=>addMsg('Error al calcular: '+e.message));return;
+ }
+
+ addMsg(`Puedo consultar la evaluación actual. Prueba con:
+• “¿Qué equipos FEN/MEN tiene esta OC?”
+• “Muéstrame el mapa”
+• “¿Cuántos postes encontraste?”
+• “¿Cuánto cuesta?”
+• “¿Por qué es factible?”
+• “¿Cuál es la ruta OC a mufa?”
+• “Dame un resumen”
+• “Dame un respaldo”`);
+}
+async function bindFile(id,key,info,type){
+ $(id).addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;$(info).textContent='Procesando…';
+ try{S[key]=await loadFile(f,type);$(info).textContent=`${S[key].length.toLocaleString('es-CL')} registros · ${f.name}`;updateEngine();addMsg(`Cargué ${f.name}: ${S[key].length.toLocaleString('es-CL')} registros.`)}
+ catch(err){S[key]=[];$(info).textContent='Error: formato no reconocido';updateEngine();addMsg(`No pude leer ${f.name}. Revisa que sea GeoJSON, JSON o CSV válido.`)}
+ })
+}
+
+async function loadBaseDataFromServer(){
+ try{
+   const [mufasRes,ocRes,fenRes]=await Promise.all([
+     fetch('/api/base/mufas'),fetch('/api/base/oc'),fetch('/api/base/fen')
+   ]);
+   if(mufasRes.ok){
+     const g=await mufasRes.json();S.mufas=featuresFrom(g).map(x=>norm(x,'mufa'));
+   }
+   if(ocRes.ok){
+     const g=await ocRes.json();S.ocs=featuresFrom(g).map(x=>norm(x,'oc'));
+   }
+   if(fenRes.ok){
+     const g=await fenRes.json();S.fen=featuresFrom(g).map(x=>norm(x,'fen'));
+   }
+   updateEngine();
+   await refreshServerStatus();
+   addMsg(`Bases del motor cargadas: ${S.mufas.length.toLocaleString('es-CL')} mufas · ${S.ocs.length.toLocaleString('es-CL')} OC · ${S.fen.length.toLocaleString('es-CL')} equipos.`);
+ }catch(e){console.error(e);addMsg('No pude cargar las bases desde el motor NEXO.');}
+}
+
+function updateEngine(){
+ const ok=S.mufas.length>0;
+ $('engineDot').className='dot '+(ok?'ok':'');
+ $('engineText').textContent=ok?`NEXO listo · ${S.mufas.length.toLocaleString('es-CL')} mufas`:'Esperando motor NEXO…';
+} mufas`:'Carga Mufas TIGO.'}
+
+
+
+
+
+
+$('roadsFile').addEventListener('change',async e=>{
+ const f=e.target.files[0];if(!f)return;$('roadsInfo').textContent='Procesando…';
+ try{
+   const data=JSON.parse(await f.text());
+   const feats=data.type==='FeatureCollection'?(data.features||[]):[];
+   S.roads=feats.filter(x=>x.geometry&&['LineString','MultiLineString'].includes(x.geometry.type));
+   $('roadsInfo').textContent=`${S.roads.length.toLocaleString('es-CL')} tramos · ${f.name}`;
+   addMsg(`Cargué la red vial ${f.name}: ${S.roads.length.toLocaleString('es-CL')} tramos. En esta V2.8 la usaré como fuente preparada para el router; el conteo de postes aún se hace sobre corredor Cliente↔Mufa.`);
+ }catch(err){
+   S.roads=[];$('roadsInfo').textContent='Error: GeoJSON LineString no válido';
+   addMsg(`No pude leer la red vial ${f.name}.`);
+ }
+});
+
+$('chatForm').addEventListener('submit',e=>{e.preventDefault();const t=$('prompt').value;$('prompt').value='';handle(t)});
+$('q1').addEventListener('click',()=>{$('prompt').value='Calcula la factibilidad de este cliente: -33.5743795, -70.5590754';$('prompt').focus()});
+$('qBackup').addEventListener('click',()=>handle('Dame un respaldo'));
+$('q2').addEventListener('click',()=>handle('Estado de las bases'));
+
+async function uploadPostesTemporal(){
+ const file=$('postesUploadFile')?.files?.[0];
+ if(!file){addMsg('Selecciona primero el archivo GeoParquet de postes.');return}
+ if(!file.name.toLowerCase().endsWith('.parquet')&&!file.name.toLowerCase().endsWith('.pq')){
+   addMsg('El archivo de postes debe ser .parquet o .pq.');return;
+ }
+ const info=$('postesInfo'),mode=$('postesModeInfo'),btn=$('postesUploadBtn');
+ btn.disabled=true;
+ info.textContent=`Subiendo ${(file.size/1024/1024).toFixed(1)} MB a NEXO…`;
+ mode.textContent='La carga puede tardar algunos minutos en la primera vez.';
+ try{
+   const fd=new FormData();fd.append('file',file,file.name);
+   const res=await fetch('/api/postes/upload',{method:'POST',body:fd});
+   if(!res.ok)throw new Error(await res.text());
+   const data=await res.json();
+   S.postesParquetReady=true;S.postesParquetName=data.name||file.name;
+   info.textContent=`GeoParquet listo · ${Number(data.count||0).toLocaleString('es-CL')} postes`;
+   mode.textContent='Modo temporal en Render · DuckDB BBOX';
+   addMsg(`Postes cargados para esta sesión: ${Number(data.count||0).toLocaleString('es-CL')} registros.`);
+   if(S.map)await renderViewportPostes();
+ }catch(e){
+   info.textContent='Error cargando GeoParquet';
+   mode.textContent=e.message;
+   addMsg(`No pude cargar los postes: ${e.message}`);
+ }finally{btn.disabled=false}
+}
+async function deletePostesTemporal(){
+ try{
+   await fetch('/api/postes/session',{method:'DELETE'});
+   S.postesParquetReady=false;S.postesViewportCount=0;
+   clearViewportPostes();
+   $('postesInfo').textContent='No cargado · carga manual por sesión';
+   $('postesModeInfo').textContent='El archivo se elimina al reiniciar/dormir el servicio.';
+   if($('v31Postes'))$('v31Postes').textContent='0';
+   addMsg('Postes descargados de la sesión.');
+ }catch(e){addMsg('No pude descargar los postes de la sesión.')}
+}
+$('postesUploadBtn')?.addEventListener('click',uploadPostesTemporal);
+$('postesDeleteBtn')?.addEventListener('click',deletePostesTemporal);
+
+
+$('qEquip').addEventListener('click',()=>handle('¿Qué equipos FEN/MEN tiene esta OC?'));
+$('qMap').addEventListener('click',()=>handle('Muéstrame el mapa'));
+$('qSummary').addEventListener('click',()=>handle('Dame un resumen'));
+$('closeMap').addEventListener('click',()=>$('nexoMapCard').classList.remove('show'));
+
+$('forget').addEventListener('click',()=>{loadBaseDataFromServer();});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}updateEngine();loadBaseDataFromServer();
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  document.title='NEXO AI v3.4 Render · Fibra Óptica Inteligente';
+});
+</script>
+
+
+
+</body></html>
