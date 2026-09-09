@@ -224,7 +224,7 @@ body{overflow-x:hidden}
 <div class="wrap">
   <div class="hero">
     <div class="avatar">🤖</div>
-    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4.1 Render · Agente inteligente de ingeniería FO</p></div>
+    <div><h1>NEXO · Agente FO</h1><p>NEXO AI v3.4.2 Render · Agente inteligente de ingeniería FO</p></div>
   </div>
 
   
@@ -308,7 +308,7 @@ Ejemplos:
       </div>
 
       <div style="margin-top:10px"><button id="forget" class="danger" type="button">Recargar datos del motor</button></div>
-      <p class="tip">NEXO AI v3.4.1 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
+      <p class="tip">NEXO AI v3.4.2 Render · Rutas · Postación · FEN/MEN · Cubicación SIGO · Agente contextual</p>
     </aside>
   
 </div>
@@ -1122,19 +1122,7 @@ function updateEngine(){
 
 
 
-$('roadsFile').addEventListener('change',async e=>{
- const f=e.target.files[0];if(!f)return;$('roadsInfo').textContent='Procesando…';
- try{
-   const data=JSON.parse(await f.text());
-   const feats=data.type==='FeatureCollection'?(data.features||[]):[];
-   S.roads=feats.filter(x=>x.geometry&&['LineString','MultiLineString'].includes(x.geometry.type));
-   $('roadsInfo').textContent=`${S.roads.length.toLocaleString('es-CL')} tramos · ${f.name}`;
-   addMsg(`Cargué la red vial ${f.name}: ${S.roads.length.toLocaleString('es-CL')} tramos. En esta V2.8 la usaré como fuente preparada para el router; el conteo de postes aún se hace sobre corredor Cliente↔Mufa.`);
- }catch(err){
-   S.roads=[];$('roadsInfo').textContent='Error: GeoJSON LineString no válido';
-   addMsg(`No pude leer la red vial ${f.name}.`);
- }
-});
+
 
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();const t=$('prompt').value;$('prompt').value='';handle(t)});
 $('q1').addEventListener('click',()=>{$('prompt').value='Calcula la factibilidad de este cliente: -33.5743795, -70.5590754';$('prompt').focus()});
@@ -1188,13 +1176,18 @@ $('qSummary').addEventListener('click',()=>handle('Dame un resumen'));
 $('closeMap').addEventListener('click',()=>$('nexoMapCard').classList.remove('show'));
 
 $('forget').addEventListener('click',()=>{loadBaseDataFromServer();});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}updateEngine();loadBaseDataFromServer();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+updateEngine();
+loadBaseDataFromServer().catch(e=>{
+  console.error(e);
+  addMsg(`Error iniciando NEXO: ${e.message}`);
+});
 })();
 </script>
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.4.1 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.4.2 Render · Fibra Óptica Inteligente';
 });
 </script>
 
