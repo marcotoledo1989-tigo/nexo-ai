@@ -260,7 +260,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
 .legend-mufa{width:17px;height:17px;border-radius:50%;background:#ffae2c;border:4px solid #111;outline:2px solid white}
 .legend-industry{width:18px;height:14px;background:#1178ff;border:2px solid white}
 .legend-route{width:31px;height:5px;border-radius:4px;display:inline-block}.legend-route.red{background:#fb384e}.legend-route.blue{background:#1178ff}
-.legend-pole{width:18px;height:24px;position:relative;display:inline-block;background:rgba(0,0,0,.55);border-radius:8px}.legend-pole:before{content:"";position:absolute;left:8px;top:3px;width:2px;height:18px;background:#fff}.legend-pole:after{content:"";position:absolute;left:3px;top:8px;width:12px;height:2px;background:#fff}
+.legend-pole{width:17px;height:17px;display:inline-grid;place-items:center;background:#12aee8;border:2px solid #fff;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);font-size:0}.legend-pole:before{content:"P";font-size:9px;font-weight:900;color:#fff;transform:rotate(45deg)}.legend-pole:after{display:none}
 .case-panel{border:1px solid rgba(18,191,252,.35);border-radius:12px;background:linear-gradient(180deg,#071b2e,#041320);padding:13px;min-width:0}.case-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid #173b54}.case-head span{font-size:10px;font-weight:800;background:#425464;color:white;border-radius:6px;padding:6px 9px}.case-head span.ok{background:#12df8a;color:#062316}.case-title{font-weight:800;margin:12px 0 6px;padding-top:8px;border-top:1px solid #173b54}.case-block{display:grid;gap:2px}.case-block>div{display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:6px;background:#09233a}.case-block span{color:#a8c0d0;font-size:11px}.case-block b{font-size:11px;text-align:right;max-width:155px;overflow:hidden;text-overflow:ellipsis}.economic-pro .total{background:linear-gradient(90deg,#087b9d,#0d5f78)}.action-pro{width:100%;margin-top:9px;background:#083b61!important;border:1px solid #1687bd!important;color:#bfeeff!important;padding:9px!important}
 .bottom-row{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:10px;margin-top:10px}
 .agent-console,.activity-panel{border:1px solid rgba(18,191,252,.3);border-radius:12px;background:#05172a;padding:12px}.console-title{display:flex;align-items:center;gap:8px}.console-title span{color:#28cbff}.console-title button{margin-left:auto;padding:6px 10px!important}.agent-console .messages{max-height:130px;min-height:70px;margin:8px 0;border-top:1px solid #153650;border-bottom:1px solid #153650;padding:8px 0;overflow:auto}.agent-console .msg{font-size:11px!important;padding:7px 10px!important}.composer-pro{display:grid;grid-template-columns:1fr 50px;gap:7px}.composer-pro input{height:45px;border-radius:12px!important}.send-pro{border-radius:50%!important;width:44px!important;height:44px!important;font-size:20px!important;padding:0!important}.quick-pro{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.quick-pro button{font-size:10px!important;padding:7px 12px!important;border-radius:999px!important}
@@ -269,12 +269,20 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
 .hidden{display:none!important}
 
 /* Postes: símbolo visible, por encima de rutas */
-.v31-poste-icon{width:22px!important;height:31px!important;position:relative!important;background:rgba(0,10,18,.85)!important;border:1px solid rgba(255,255,255,.75)!important;border-radius:9px!important;box-shadow:0 0 12px rgba(19,203,255,.95),0 2px 5px rgba(0,0,0,.8)!important}
-.v31-poste-icon:before{content:""!important;position:absolute!important;left:10px!important;top:4px!important;width:2px!important;height:23px!important;background:#fff!important;border-radius:2px!important;box-shadow:0 0 4px #fff!important}
-.v31-poste-icon:after{content:""!important;position:absolute!important;left:4px!important;top:9px!important;width:14px!important;height:3px!important;background:#fff!important;border-radius:2px!important;box-shadow:0 0 4px #fff!important}
+.v31-poste-icon{width:24px!important;height:24px!important;position:relative!important;background:linear-gradient(145deg,#12c8ff,#0869b8)!important;border:2px solid #fff!important;border-radius:50% 50% 50% 6px!important;transform:rotate(-45deg)!important;box-shadow:0 0 13px rgba(18,200,255,.95),0 3px 7px rgba(0,0,0,.8)!important}
+.v31-poste-icon:before{content:"P"!important;position:absolute!important;inset:0!important;display:grid!important;place-items:center!important;font-size:12px!important;font-weight:900!important;color:#fff!important;transform:rotate(45deg)!important;text-shadow:0 1px 2px #00304f!important}
+.v31-poste-icon:after{display:none!important}
 .leaflet-marker-icon.nexo-div-icon{z-index:900!important}
 @media(max-width:1100px){.nexo-shell{grid-template-columns:72px 1fr}.side-nav span,.nexo-bot-card,.system-card,.sidebar-version{display:none}.top-nav{display:none}.nexo-topbar{grid-template-columns:1fr auto}.kpi-row{grid-template-columns:repeat(3,1fr)}.workspace,.bottom-row{grid-template-columns:1fr}.case-panel,.activity-panel{display:none}}
 @media(max-width:720px){.nexo-shell{grid-template-columns:1fr}.nexo-sidebar{display:none}.nexo-topbar{grid-template-columns:1fr}.top-user{display:none}.nexo-main{padding:8px}.kpi-row{grid-template-columns:repeat(2,1fr)}.map-panel{height:420px}.map-legend-pro{width:180px;font-size:9px}}
+</style>
+
+
+<style id="nexo-v37-backup">
+.nexo-backup-mufa{width:32px;height:32px;border-radius:50%;background:#ffd54f;border:5px solid #6a3cff;box-shadow:0 0 0 3px #fff,0 0 18px rgba(128,88,255,.9)}
+.legend-route.backup-client{background:repeating-linear-gradient(90deg,#ffce3a 0 10px,transparent 10px 15px);border:1px solid #ffce3a}
+.legend-route.backup-oc{background:repeating-linear-gradient(90deg,#9b6dff 0 10px,transparent 10px 15px);border:1px solid #9b6dff}
+.legend-backup-mufa{width:17px;height:17px;border-radius:50%;background:#ffd54f;border:4px solid #6a3cff;outline:2px solid white}
 </style>
 
 </head>
@@ -322,7 +330,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
       <small>Disponible</small>
       <span id="engineDot" class="dot hidden"></span>
     </div>
-    <div class="sidebar-version">NEXO AI v3.6<br><span>Render · 2026</span></div>
+    <div class="sidebar-version">NEXO AI v3.7<br><span>Render · 2026</span></div>
   </aside>
 
   <main class="nexo-main">
@@ -358,6 +366,9 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
           <div><span class="legend-route red"></span> Ruta Cliente – Mufa</div>
           <div><span class="legend-route blue"></span> Ruta Mufa – OC</div>
           <div><span class="legend-pole"></span> Poste visible</div>
+          <div><span class="legend-backup-mufa"></span> Mufa respaldo</div>
+          <div><span class="legend-route backup-client"></span> Respaldo Cliente – Mufa</div>
+          <div><span class="legend-route backup-oc"></span> Respaldo Mufa – OC</div>
         </div>
         <button id="closeMap" class="hidden" type="button">Ocultar mapa</button>
         <div id="mapSubtitle" class="hidden">Cliente → Mufa → OC</div>
@@ -455,7 +466,7 @@ body{margin:0!important;background:#020a13!important;color:var(--n-text)!importa
 </div>
 <script>
 (()=>{
-const S={mufas:[],ocs:[],fen:[],postes:[],roads:[],last:null,map:null,mapLayers:[],viewportPosteLayer:null,postesParquetReady:false,postesParquetName:'',postesViewportCount:0,serverStatus:null};
+const S={mufas:[],ocs:[],fen:[],postes:[],roads:[],last:null,map:null,mapLayers:[],viewportPosteLayer:null,backupMapLayers:[],postesParquetReady:false,postesParquetName:'',postesViewportCount:0,serverStatus:null};
 const $=id=>document.getElementById(id);
 
 const A={
@@ -808,6 +819,7 @@ function showResult(m,ocRes,eq,poles,valuation,econ){
 async function analyze(lat,lon,mode='factibilidad'){
  if(!S.mufas.length){addMsg('Primero carga la base Mufas TIGO.');return}
  const r=ranked(S.mufas,lat,lon),preferred=r.filter(x=>!generic(x)),m=preferred[0]||r[0];
+ clearBackupMapLayers();
  const smartOC=resolveOCIntelligent(m);
  const ocRes=smartOC.ocRes,eq=smartOC.eq;
  addMsg('Calculando ruta vial bidireccional con OSRM…');
@@ -879,20 +891,28 @@ Evaluación económica SIGO
 
 No calculé respaldo. Si lo necesitas, dime: “Dame un respaldo”.`);
 }
-function giveBackup(){
+async function giveBackup(){
  if(!S.last){addMsg('Primero calcula una factibilidad para saber desde qué cliente debo buscar el respaldo.');return}
- const {mufa,preferred,ranked:r}=S.last;
+ const {mufa,preferred,ranked:r,lat,lon}=S.last;
  const backup=(preferred.find(x=>x.label!==mufa.label)||r.find(x=>x.label!==mufa.label)||null);
  if(!backup){addMsg('No encontré una mufa alternativa distinta para respaldo.');return}
- const oc=resolveOC(backup),eq=equipmentFor(oc.value);
+ const smartBackupOC=resolveOCIntelligent(backup),ocRes=smartBackupOC.ocRes,eq=smartBackupOC.eq;
+ let route=null,ocRoute=null;
+ try{route=await automaticTwoWayRoute(lat,lon,backup)}catch(e){}
+ try{ocRoute=await calculateOCMufaRoute(ocRes,backup)}catch(e){}
+ const backupPlan={mufa:backup,ocRes,eq,smartOC:smartBackupOC,route,ocRoute,routeMeters:route?.distanceM??backup.d,cableMeters:(route?.distanceM??backup.d)*1.10};
+ S.last.backupPlan=backupPlan;
  $('backup').textContent=backup.code||backup.id||backup.name||backup.label;$('backupMetric').classList.remove('hidden');
- addMsg(`Respaldo solicitado:
-• ID: ${backup.id||'SIN ID'}
-• Código: ${backup.code||'SIN CÓDIGO'}
-• Distancia directa: ${Math.round(backup.d)} m
-• Oficina Central: ${oc.value}
-• Asociación OC: ${oc.source}
-• MEN/FEN: ${S.fen.length?(eq.length?`CON RED · ${eq.length} equipo(s)`:'SIN RED MEN/FEN'):'NO EVALUADA'}`)
+ addMsg(`Respaldo diseñado:
+• Mufa respaldo: ${backup.code||'SIN CÓDIGO'} · ID ${backup.id||'SIN ID'}
+• Cliente → Mufa: ${route?Math.round(route.distanceM)+' m por ruta vial':Math.round(backup.d)+' m directa'}
+• Cable respaldo +10%: ${Math.round(backupPlan.cableMeters)} m
+• OC respaldo: ${ocRes.value}
+• Equipos FEN/MEN: ${eq.length?eq.length+' equipo(s)':'SIN EQUIPOS'}
+• Mufa → OC: ${ocRoute?Math.round(ocRoute.distanceM)+' m':'no disponible'}
+
+Lo dibujé en el mapa: amarillo discontinuo Cliente–Mufa y violeta discontinuo Mufa–OC.`);
+ renderCurrentMap();setTimeout(()=>renderBackupOnMap(),160);
 }
 function queryMufaByText(text){
  const m=text.match(/mufa\s+([A-Za-z0-9._-]+)/i);if(!m)return null;const key=m[1].toLowerCase();
@@ -1123,6 +1143,37 @@ function bindViewportPostes(){
  S.map.on('moveend zoomend',refresh);
 }
 
+
+function nexoBackupMufaIcon(){
+ return L.divIcon({className:'nexo-div-icon',html:'<div class="nexo-marker nexo-backup-mufa"></div>',iconSize:[42,42],iconAnchor:[21,28],popupAnchor:[0,-28]});
+}
+function clearBackupMapLayers(){
+ if(!S.map)return;
+ (S.backupMapLayers||[]).forEach(l=>{try{S.map.removeLayer(l)}catch(e){}});
+ S.backupMapLayers=[];
+}
+function renderBackupOnMap(){
+ if(!S.map||!S.last?.backupPlan)return;
+ clearBackupMapLayers();
+ const B=S.last.backupPlan,bm=[B.mufa.lat,B.mufa.lon],bounds=[];
+ const mk=L.marker(bm,{icon:nexoBackupMufaIcon(),zIndexOffset:900}).addTo(S.map).bindPopup(`Mufa respaldo: ${B.mufa.code||B.mufa.id||'—'}<br>OC: ${B.ocRes.value}<br>Equipos: ${B.eq.length}`);
+ S.backupMapLayers.push(mk);bounds.push(bm);
+ if(B.route?.coords?.length){
+   const p=L.polyline(B.route.coords,{weight:6,opacity:.95,color:'#ffce3a',dashArray:'12 8'}).addTo(S.map).bindPopup(`Respaldo Cliente ↔ Mufa · ${Math.round(B.route.distanceM)} m`);
+   S.backupMapLayers.push(p);B.route.coords.forEach(c=>bounds.push(c));
+ }
+ const ocObj=B.ocRes?.obj;
+ if(B.ocRoute?.coords?.length){
+   const p=L.polyline(B.ocRoute.coords,{weight:6,opacity:.95,color:'#9b6dff',dashArray:'12 8'}).addTo(S.map).bindPopup(`Respaldo Mufa ↔ OC ${B.ocRes.value} · ${Math.round(B.ocRoute.distanceM)} m`);
+   S.backupMapLayers.push(p);B.ocRoute.coords.forEach(c=>bounds.push(c));
+ }
+ if(ocObj&&Number.isFinite(ocObj.lat)&&Number.isFinite(ocObj.lon)){
+   const om=L.marker([ocObj.lat,ocObj.lon],{icon:nexoDivIcon('oc'),zIndexOffset:850}).addTo(S.map).bindPopup(`OC respaldo: ${B.ocRes.value}`);
+   S.backupMapLayers.push(om);bounds.push([ocObj.lat,ocObj.lon]);
+ }
+ if(bounds.length)setTimeout(()=>S.map.fitBounds(bounds.concat([[S.last.lat,S.last.lon],[S.last.mufa.lat,S.last.mufa.lon]]),{padding:[35,35]}),80);
+}
+
 function renderCurrentMap(){
  if(!S.last){addMsg('Primero calcula una factibilidad para poder dibujar las rutas.');return}
  try{
@@ -1161,7 +1212,7 @@ function renderCurrentMap(){
 
    $('nexoMapCard').classList.add('show');
    $('mapSubtitle').textContent=`${Ls.ocRes?.value||'OC'} → ${Ls.mufa.code||Ls.mufa.id||'Mufa'} → Cliente`;
-   setTimeout(()=>{map.invalidateSize();if(bounds.length)map.fitBounds(bounds,{padding:[28,28]});renderViewportPostes();updateV31KPIs()},120);
+   setTimeout(()=>{map.invalidateSize();if(bounds.length)map.fitBounds(bounds,{padding:[28,28]});renderViewportPostes();updateV31KPIs();if(S.last?.backupPlan)renderBackupOnMap()},120);
  }catch(e){addMsg('No pude mostrar el mapa: '+e.message)}
 }
 
@@ -1191,7 +1242,7 @@ function handle(text){
  addMsg(t,'user');
  const low=normalizeIntentText(t);
 
- if((low.includes('respaldo')||low.includes('alternativa'))&&!extractCoords(t)){giveBackup();return}
+ if((low.includes('respaldo')||low.includes('alternativa'))&&!extractCoords(t)){giveBackup().catch(e=>addMsg('Error diseñando respaldo: '+e.message));return}
 
  if((low.includes('equipo')||low.includes('fen')||low.includes('men'))){
    if(S.last && (low.includes('esta oc')||low.includes('la oc')||low.includes('oficina central')||low==='equipos')){
@@ -1409,6 +1460,7 @@ $('postesDeleteBtn')?.addEventListener('click',deletePostesTemporal);
 
 
 $('qEquip').addEventListener('click',()=>handle('¿Qué equipos FEN/MEN tiene esta OC?'));
+$('qBackup')?.addEventListener('click',()=>handle('Dame un respaldo'));
 $('qMap').addEventListener('click',()=>handle('Muéstrame el mapa'));
 $('qSummary').addEventListener('click',()=>handle('Dame un resumen'));
 $('closeMap').addEventListener('click',()=>$('nexoMapCard').classList.remove('show'));
@@ -1425,7 +1477,7 @@ loadBaseDataFromServer().catch(e=>{
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  document.title='NEXO AI v3.6 Render · Fibra Óptica Inteligente';
+  document.title='NEXO AI v3.7 Render · Fibra Óptica Inteligente';
 });
 </script>
 
